@@ -1,0 +1,349 @@
+/**
+ * RTL Stylesheet
+ * 
+ * Right-to-left language support for the Odds Comparison theme.
+ * 
+ * @package Odds_Comparison
+ * @since 1.0.0
+ */
+
+/* ============================================
+   DIRECTION OVERRIDES
+   ============================================ */
+
+body {
+    direction: rtl;
+    unicode-bidi: embed;
+}
+
+/* ============================================
+   LAYOUT
+   ============================================ */
+
+.container {
+    /* Container works the same in RTL */
+}
+
+.header-inner {
+    /* Flex direction remains LTR for logo alignment */
+}
+
+.main-navigation ul {
+    /* Navigation items will be reversed */
+}
+
+.site-footer {
+    /* Footer grid works with RTL */
+}
+
+.footer-grid {
+    direction: ltr;
+}
+
+/* ============================================
+   HEADER & NAVIGATION
+   ============================================ */
+
+.main-navigation {
+    /* Navigation alignment */
+}
+
+.main-navigation a::after {
+    /* Underline animation direction */
+    left: auto;
+    right: 0;
+}
+
+.main-navigation a:hover::after {
+    width: 100%;
+}
+
+/* ============================================
+   ODDS TABLE
+   ============================================ */
+
+.odds-match-row {
+    /* Grid layout remains */
+}
+
+.odds-match-teams {
+    flex-direction: row-reverse;
+}
+
+.team-names {
+    text-align: right;
+}
+
+.odds-columns {
+    flex-direction: row-reverse;
+}
+
+.odds-cell {
+    /* Cell alignment */
+}
+
+.odds-cell.best-odds {
+    /* Best odds badge */
+}
+
+.bookmaker-card {
+    flex-direction: row-reverse;
+}
+
+.bookmaker-info {
+    text-align: right;
+}
+
+/* ============================================
+   OPERATOR CARD
+   ============================================ */
+
+.operator-header {
+    flex-direction: row-reverse;
+}
+
+.operator-pros-cons .pros-cons-row {
+    flex-direction: row-reverse;
+}
+
+.pros-list li::before {
+    margin-right: 0;
+    margin-left: var(--oc-space-2);
+}
+
+.cons-list li::before {
+    margin-right: 0;
+    margin-left: var(--oc-space-2);
+}
+
+/* ============================================
+   FILTERS
+   ============================================ */
+
+.filters-bar {
+    /* Flex layout */
+}
+
+.filter-group {
+    text-align: right;
+}
+
+/* ============================================
+   BUTTONS & LINKS
+   ============================================ */
+
+.affiliate-link::after {
+    content: '←';
+}
+
+.affiliate-btn:hover {
+    /* Button styles */
+}
+
+/* ============================================
+   WIDGETS
+   ============================================ */
+
+.widget {
+    /* Widget styles */
+}
+
+.widget-title {
+    text-align: right;
+}
+
+/* ============================================
+   POST CONTENT
+   ============================================ */
+
+.post-content,
+.entry-content {
+    text-align: justify;
+}
+
+.post-navigation {
+    /* Navigation between posts */
+}
+
+.post-navigation .nav-previous {
+    float: right;
+}
+
+.post-navigation .nav-next {
+    float: left;
+    text-align: left;
+}
+
+/* ============================================
+   COMMENTS
+   ============================================ */
+
+.comments-area {
+    text-align: right;
+}
+
+.comment-list {
+    padding-right: 0;
+    padding-left: inherit;
+}
+
+.comment-list .children {
+    padding-right: var(--oc-space-8);
+    padding-left: 0;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+
+input[type="text"],
+input[type="email"],
+input[type="url"],
+input[type="password"],
+input[type="search"],
+textarea {
+    text-align: right;
+}
+
+.search-form {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.search-form .search-submit {
+    border-radius: var(--oc-radius-md) 0 0 var(--oc-radius-md);
+}
+
+.search-form .search-field {
+    border-radius: 0 var(--oc-radius-md) var(--oc-radius-md) 0;
+}
+
+/* ============================================
+   RESPONSIVE RTL
+   ============================================ */
+
+@media (max-width: 768px) {
+    .header-inner {
+        flex-direction: column;
+    }
+    
+    .odds-match-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .odds-match-teams {
+        order: 1;
+    }
+    
+    .match-time {
+        order: 2;
+    }
+    
+    .odds-columns {
+        order: 3;
+        width: 100%;
+    }
+    
+    .odds-expand-btn {
+        order: 4;
+    }
+    
+    .odds-cell {
+        flex: 1;
+    }
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: right;
+}
+
+.text-right {
+    text-align: left;
+}
+
+.mt-1,
+.mt-2,
+.mt-3,
+.mt-4,
+.mt-6,
+.mt-8 {
+    /* Margin top remains */
+}
+
+.mb-1,
+.mb-2,
+.mb-3,
+.mb-4,
+.mb-6,
+.mb-8 {
+    /* Margin bottom remains */
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.gap-2,
+.gap-3,
+.gap-4 {
+    gap: var(--oc-space-2);
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.screen-reader-text:focus {
+    left: auto;
+    right: 0;
+}
+
+/* ============================================
+   WORDPRESS CORE OVERRIDES
+   ============================================ */
+
+.alignleft {
+    float: right;
+    margin-left: var(--oc-space-4);
+    margin-right: 0;
+}
+
+.alignright {
+    float: left;
+    margin-right: var(--oc-space-4);
+    margin-left: 0;
+}
+
+.aligncenter {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wp-caption-text {
+    text-align: center;
+}
+
+.gallery-caption {
+    text-align: center;
+}
+

@@ -1,0 +1,2037 @@
+/**
+ * Main Stylesheet
+ *
+ * Front-end styles for Odds Comparison plugin.
+ *
+ * @package Odds_Comparison
+ * @since 1.0.0 */
+
+/* === CSS Variables === */
+:root {
+    --oc-primary: #2563eb;
+    --oc-primary-dark: #1d4ed8;
+    --oc-secondary: #64748b;
+    --oc-success: #27ae60;
+    --oc-danger: #e74c3c;
+    --oc-warning: #f39c12;
+    --oc-bg: #ffffff;
+    --oc-bg-alt: #f8fafc;
+    --oc-text: #1e293b;
+    --oc-text-light: #64748b;
+    --oc-border: #e2e8f0;
+    --oc-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --oc-shadow-lg: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --oc-radius: 8px;
+    --oc-radius-lg: 12px;
+    --oc-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+}
+
+/* === Base Styles === */
+.oc-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.oc-match-container,
+.oc-operator-container {
+    font-family: var(--oc-font-family);
+    color: var(--oc-text);
+    line-height: 1.6;
+}
+
+/* === Match Header === */
+.oc-match-header {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.oc-teams {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.oc-team {
+    text-align: center;
+    min-width: 120px;
+}
+
+.oc-team-logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: var(--oc-radius);
+}
+
+.oc-team-name {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+}
+
+.oc-match-info {
+    text-align: center;
+    padding: 0 1rem;
+}
+
+.oc-vs {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--oc-primary);
+    margin-bottom: 0.5rem;
+}
+
+.oc-match-date,
+.oc-match-time {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-venue {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-venue .dashicons {
+    vertical-align: middle;
+    margin-right: 0.25rem;
+}
+
+/* === Badges === */
+.oc-badge {
+    position: absolute;
+    top: 1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 10;
+}
+
+.oc-featured-badge {
+    left: 1rem;
+    background: var(--oc-warning);
+    color: #fff;
+}
+
+.oc-live-badge {
+    right: 1rem;
+    background: var(--oc-danger);
+    color: #fff;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* === Odds Comparison Table === */
+.oc-odds-comparison {
+    margin: 2rem 0;
+}
+
+.oc-odds-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.oc-odds-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.oc-odds-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.oc-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    background: #fff;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.oc-odds-list {
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-lg);
+    overflow: hidden;
+}
+
+.oc-odd-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 1rem;
+    padding: 1rem;
+    border-bottom: 1px solid var(--oc-border);
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.oc-odd-row:last-child {
+    border-bottom: none;
+}
+
+.oc-odd-row:hover {
+    background: var(--oc-bg-alt);
+}
+
+.oc-header-row {
+    background: var(--oc-bg-alt);
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.oc-bookmaker-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.oc-bookmaker-logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.oc-bookmaker-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.oc-bookmaker-name {
+    font-weight: 600;
+    font-size: 0.9375rem;
+}
+
+.oc-bookmaker-rating {
+    font-size: 0.75rem;
+    color: var(--oc-warning);
+}
+
+.oc-bookmaker-bonus {
+    font-size: 0.75rem;
+    color: var(--oc-success);
+}
+
+.oc-odds-values {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.oc-odd-cell {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: var(--oc-radius);
+    background: var(--oc-bg-alt);
+    position: relative;
+}
+
+.oc-odd-cell.oc-best-odd {
+    background: #dcfce7;
+    border: 1px solid var(--oc-success);
+}
+
+.oc-odd-value,
+.oc-odd-button {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--oc-text);
+    text-decoration: none;
+}
+
+.oc-odd-button {
+    background: var(--oc-primary);
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: var(--oc-radius);
+    transition: background 0.2s;
+}
+
+.oc-odd-button:hover {
+    background: var(--oc-primary-dark);
+}
+
+.oc-odd-na {
+    color: var(--oc-text-light);
+    font-size: 0.875rem;
+}
+
+.oc-best-badge {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    background: var(--oc-success);
+    color: #fff;
+    font-size: 0.625rem;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.oc-visit-btn {
+    padding: 0.5rem 1rem;
+    background: var(--oc-primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.oc-visit-btn:hover {
+    background: var(--oc-primary-dark);
+    color: #fff;
+}
+
+/* === No Odds === */
+.oc-no-odds {
+    text-align: center;
+    padding: 3rem;
+    color: var(--oc-text-light);
+}
+
+.oc-last-updated {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+    text-align: center;
+    margin-top: 1rem;
+}
+
+/* === Match Card (Archive) === */
+.oc-matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.oc-match-card {
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-lg);
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.oc-match-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--oc-shadow-lg);
+}
+
+.oc-match-card.featured {
+    border: 2px solid var(--oc-warning);
+}
+
+.oc-match-card.live {
+    border-left: 4px solid var(--oc-danger);
+}
+
+.oc-card-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.oc-card-badge.oc-featured {
+    background: var(--oc-warning);
+    color: #fff;
+}
+
+.oc-card-badge.oc-live {
+    background: var(--oc-danger);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.live-indicator {
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.oc-match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.oc-team {
+    text-align: center;
+    flex: 1;
+}
+
+.oc-team-logo img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+}
+
+.oc-team-name {
+    display: block;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.oc-match-vs {
+    text-align: center;
+    padding: 0 0.5rem;
+}
+
+.oc-match-vs .vs {
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.oc-match-vs .oc-match-date,
+.oc-match-vs .oc-match-time {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+.oc-match-odds-summary {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+}
+
+.oc-odds-mini {
+    text-align: center;
+    flex: 1;
+}
+
+.oc-odds-mini .oc-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+    margin-bottom: 0.25rem;
+}
+
+.oc-odds-mini .oc-value {
+    display: block;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.oc-odds-mini .oc-value.na {
+    color: var(--oc-text-light);
+}
+
+.oc-match-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-odds-count {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+.oc-view-btn {
+    padding: 0.5rem 1rem;
+    background: var(--oc-bg-alt);
+    color: var(--oc-text);
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.oc-view-btn:hover {
+    background: var(--oc-border);
+}
+
+/* === Operator Card === */
+.oc-operators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.oc-operator-card {
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-lg);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.oc-operator-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--oc-shadow-lg);
+}
+
+.oc-operator-card.featured {
+    border: 2px solid var(--oc-primary);
+}
+
+.oc-operator-logo img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.oc-logo-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--oc-primary);
+}
+
+.oc-operator-name {
+    font-size: 1.125rem;
+    margin: 0 0 0.5rem;
+}
+
+.oc-operator-name a {
+    color: var(--oc-text);
+    text-decoration: none;
+}
+
+.oc-operator-name a:hover {
+    color: var(--oc-primary);
+}
+
+.oc-stars {
+    display: inline-flex;
+    gap: 0.125rem;
+}
+
+.star {
+    color: var(--oc-border);
+    font-size: 1rem;
+}
+
+.star.filled {
+    color: var(--oc-warning);
+}
+
+.oc-rating-value {
+    margin-left: 0.25rem;
+    font-weight: 600;
+}
+
+.oc-review-count {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+.oc-operator-bonus {
+    margin-top: 0.5rem;
+}
+
+.oc-bonus-amount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--oc-success);
+}
+
+.oc-bonus-type {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+.oc-operator-pros-mini {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    text-align: left;
+}
+
+.oc-operator-pros-mini li {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+    margin-bottom: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.oc-operator-pros-mini .dashicons {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: var(--oc-success);
+}
+
+.oc-operator-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.oc-operator-actions .button {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.oc-review-btn {
+    background: var(--oc-bg-alt);
+    color: var(--oc-text);
+    padding: 0.5rem 1rem;
+    border-radius: var(--oc-radius);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.oc-review-btn:hover {
+    background: var(--oc-border);
+}
+
+/* === Operator Single Page === */
+.oc-operator-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 2rem;
+    padding: 2rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.oc-operator-header .oc-operator-logo img {
+    width: 120px;
+    height: 120px;
+}
+
+.oc-operator-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.75rem;
+}
+
+.oc-operator-licenses {
+    margin-top: 0.5rem;
+}
+
+.oc-license-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--oc-border);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+}
+
+.oc-operator-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.oc-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-feature .dashicons {
+    color: var(--oc-success);
+}
+
+.oc-operator-cta .oc-visit-btn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+}
+
+.oc-operator-bonus {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    border-radius: var(--oc-radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+}
+
+.oc-bonus-card {
+    text-align: center;
+}
+
+.oc-bonus-card .oc-bonus-amount {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--oc-success);
+}
+
+.oc-bonus-card .oc-bonus-type {
+    font-size: 1rem;
+    color: var(--oc-text);
+}
+
+.oc-bonus-card .oc-bonus-code {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+}
+
+.oc-bonus-card .oc-bonus-code code {
+    background: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: var(--oc-radius);
+    font-weight: 600;
+}
+
+.oc-bonus-details {
+    border-left: 2px solid var(--oc-success);
+    padding-left: 2rem;
+}
+
+.oc-bonus-description {
+    margin-bottom: 1rem;
+}
+
+.oc-bonus-terms {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.oc-bonus-terms li {
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-operator-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+}
+
+.oc-operator-pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-pros h3,
+.oc-cons h3 {
+    margin-top: 0;
+}
+
+.oc-pros ul,
+.oc-cons ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.oc-pros li,
+.oc-cons li {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.oc-operator-sidebar {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+    padding: 1.5rem;
+    height: fit-content;
+}
+
+/* === Archive Page Styles === */
+.oc-archive-header {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.oc-archive-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.oc-archive-description {
+    color: var(--oc-text-light);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.oc-archive-filters {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+}
+
+.oc-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.oc-filter-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* === Shortcode Styles === */
+.oc-odds-shortcode {
+    margin: 1rem 0;
+    overflow-x: auto;
+}
+
+.oc-odds-shortcode .oc-odds-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--oc-border);
+    align-items: center;
+}
+
+.oc-odds-shortcode .oc-header-row {
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.oc-odds-shortcode .oc-bookmaker-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.oc-odds-shortcode .oc-logo img {
+    width: 32px;
+    height: 32px;
+}
+
+.oc-odds-shortcode .oc-odds-btn {
+    display: block;
+    padding: 0.5rem;
+    background: var(--oc-primary);
+    color: #fff;
+    text-align: center;
+    border-radius: var(--oc-radius);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.oc-matches-shortcode .oc-matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.oc-matches-shortcode .oc-match-item {
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.oc-operators-shortcode .oc-operators-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.oc-operators-shortcode .oc-operator-item {
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.oc-best-odds-shortcode {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+}
+
+.oc-best-odds-shortcode .oc-teams {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.oc-best-odds {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.oc-best-odds .oc-odd-item {
+    text-align: center;
+}
+
+.oc-best-odds .oc-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+    margin-bottom: 0.25rem;
+}
+
+.oc-best-odds .oc-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--oc-primary);
+}
+
+.oc-best-odds .oc-bookmaker {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+/* === Responsive Styles === */
+@media (max-width: 768px) {
+    .oc-teams {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .oc-odd-row {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .oc-bookmaker-info {
+        justify-content: center;
+    }
+    
+    .oc-odds-values {
+        justify-content: center;
+    }
+    
+    .oc-operator-header {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .oc-operator-header .oc-operator-logo {
+        margin: 0 auto;
+    }
+    
+    .oc-operator-bonus {
+        grid-template-columns: 1fr;
+    }
+    
+    .oc-operator-pros-cons {
+        grid-template-columns: 1fr;
+    }
+    
+    .oc-odds-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .oc-odds-shortcode .oc-odds-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === Live Matches List Styles === */
+.oc-live-matches-list {
+    font-family: var(--oc-font-family);
+    color: var(--oc-text);
+    line-height: 1.6;
+}
+
+.oc-live-matches-list .oc-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.oc-live-matches-list .oc-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.oc-live-matches-list .oc-filter-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--oc-text-light);
+}
+
+.oc-live-matches-list .oc-filter-select {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    background: #fff;
+    font-size: 0.875rem;
+    cursor: pointer;
+    min-width: 150px;
+}
+
+.oc-live-matches-list .oc-filter-select:focus {
+    outline: none;
+    border-color: var(--oc-primary);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.oc-live-matches-list .oc-refresh-btn {
+    margin-left: auto;
+    padding: 0.5rem 1rem;
+    background: var(--oc-bg-alt);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.oc-live-matches-list .oc-refresh-btn:hover {
+    background: var(--oc-border);
+}
+
+.oc-live-matches-list .oc-refresh-btn.refreshing {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.oc-live-matches-list .oc-refresh-btn .dashicons {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.oc-live-matches-list .oc-loading {
+    text-align: center;
+    padding: 3rem;
+    color: var(--oc-text-light);
+}
+
+.oc-live-matches-list .oc-loading .spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--oc-border);
+    border-top-color: var(--oc-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.oc-matches-date-group {
+    margin-bottom: 2rem;
+}
+
+.oc-date-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--oc-text);
+    padding: 0.5rem 0;
+    border-bottom: 2px solid var(--oc-primary);
+    margin-bottom: 1rem;
+}
+
+.oc-matches-league-group {
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+}
+
+.oc-league-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--oc-text-light);
+    margin: 0 0 0.75rem;
+}
+
+.oc-matches-list {
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    overflow: hidden;
+}
+
+.oc-match-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 180px 1fr 100px;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--oc-border);
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.oc-match-row:last-child {
+    border-bottom: none;
+}
+
+.oc-match-row:hover {
+    background: var(--oc-bg-alt);
+}
+
+.oc-match-time {
+    text-align: center;
+}
+
+.oc-match-time .oc-time-value {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.oc-live-indicator {
+    display: inline-block;
+    background: var(--oc-danger);
+    color: #fff;
+    font-size: 0.625rem;
+    font-weight: 700;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    margin-bottom: 0.25rem;
+    animation: pulse 2s infinite;
+}
+
+.oc-team-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.oc-team-cell .oc-team-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.oc-team-cell .oc-team-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.oc-home-team {
+    text-align: right;
+    flex-direction: row-reverse;
+}
+
+.oc-odds-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.oc-odd-btn {
+    flex: 1;
+    display: block;
+    padding: 0.5rem 0.25rem;
+    background: var(--oc-bg-alt);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    text-align: center;
+    text-decoration: none;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--oc-text);
+    transition: all 0.2s;
+}
+
+.oc-odd-btn:hover {
+    background: var(--oc-primary);
+    color: #fff;
+    border-color: var(--oc-primary);
+}
+
+.oc-odd-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.oc-more-markets {
+    text-align: center;
+}
+
+.oc-more-markets-btn {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: var(--oc-bg-alt);
+    color: var(--oc-text);
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.oc-more-markets-btn:hover {
+    background: var(--oc-primary);
+    color: #fff;
+}
+
+.oc-matches-empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--oc-text-light);
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+}
+
+.oc-last-updated {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+    text-align: right;
+    margin-top: 1rem;
+}
+
+.oc-live-indicator-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--oc-danger);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.375rem;
+    animation: blink 1s infinite;
+}
+
+/* Mobile Responsive Styles for Live Matches */
+@media (max-width: 768px) {
+    .oc-live-matches-list .oc-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .oc-live-matches-list .oc-refresh-btn {
+        margin-left: 0;
+        justify-content: center;
+    }
+    
+    .oc-match-row {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
+    }
+    
+    .oc-match-time {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+    
+    .oc-team-cell {
+        justify-content: flex-start;
+    }
+    
+    .oc-home-team {
+        justify-content: flex-start;
+    }
+    
+    .oc-odds-cell {
+        justify-content: center;
+    }
+    
+    .oc-more-markets {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .oc-odds-cell {
+        gap: 0.25rem;
+    }
+    
+    .oc-odd-btn {
+        padding: 0.5rem 0.125rem;
+        font-size: 0.8125rem;
+    }
+    
+    .oc-team-cell .oc-team-name {
+        max-width: 100px;
+    }
+}
+
+/* === Back to Top Button === */
+.back-to-top,
+#back-to-top,
+.oc-back-to-top {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    background: var(--oc-primary);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--oc-shadow-lg);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 9999;
+    font-size: 1.25rem;
+}
+
+.back-to-top:hover,
+#back-to-top:hover,
+.oc-back-to-top:hover {
+    background: var(--oc-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.back-to-top:focus,
+#back-to-top:focus,
+.oc-back-to-top:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.back-to-top.visible,
+#back-to-top.visible,
+.oc-back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.back-to-top svg,
+#back-to-top svg,
+.oc-back-to-top svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Mobile styles for back to top button */
+@media (max-width: 768px) {
+    .back-to-top,
+    #back-to-top,
+    .oc-back-to-top {
+        width: 44px;
+        height: 44px;
+        bottom: 1.5rem;
+        right: 1.5rem;
+    }
+    
+    .back-to-top svg,
+    #back-to-top svg,
+    .oc-back-to-top svg {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+/* === Comparison Tool Page Styles === */
+.oc-comparison-tool {
+    font-family: var(--oc-font-family);
+    color: var(--oc-text);
+    line-height: 1.6;
+}
+
+.oc-comparison-header {
+    text-align: center;
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+}
+
+.oc-comparison-title {
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    color: var(--oc-text);
+}
+
+.oc-comparison-description {
+    color: var(--oc-text-light);
+    max-width: 600px;
+    margin: 0 auto;
+    font-size: 1.125rem;
+}
+
+.oc-comparison-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* Sidebar Styles */
+.oc-comparison-sidebar {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+    padding: 1.5rem;
+    position: sticky;
+    top: 2rem;
+}
+
+.oc-filter-form {
+    margin-bottom: 1.5rem;
+}
+
+.oc-filter-heading {
+    margin: 0 0 1.25rem;
+    font-size: 1.125rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--oc-border);
+}
+
+.oc-filter-section {
+    margin-bottom: 1.25rem;
+}
+
+.oc-filter-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--oc-text);
+}
+
+.oc-filter-select {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    background: #fff;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.oc-filter-select:focus {
+    outline: none;
+    border-color: var(--oc-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.oc-filter-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+.oc-filter-actions .button {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    border-radius: var(--oc-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.oc-apply-filters-btn {
+    background: var(--oc-primary);
+    color: #fff;
+    border: none;
+}
+
+.oc-apply-filters-btn:hover {
+    background: var(--oc-primary-dark);
+}
+
+.oc-reset-filters-btn {
+    background: #fff;
+    color: var(--oc-text);
+    border: 1px solid var(--oc-border);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.oc-reset-filters-btn:hover {
+    background: var(--oc-bg-alt);
+    border-color: var(--oc-text-light);
+}
+
+/* Quick Stats */
+.oc-quick-stats {
+    padding-top: 1rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-quick-stats h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.9375rem;
+}
+
+.oc-quick-stats p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-quick-stats strong {
+    color: var(--oc-primary);
+    font-size: 1.25rem;
+}
+
+/* Main Content Area */
+.oc-comparison-content {
+    min-width: 0;
+}
+
+/* Active Filters Bar */
+.oc-active-filters-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 1rem 1.25rem;
+    background: #eff6ff;
+    border-radius: var(--oc-radius);
+    margin-bottom: 1.5rem;
+    border: 1px solid #bfdbfe;
+}
+
+.oc-active-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--oc-text);
+    margin-right: 0.25rem;
+}
+
+.oc-active-filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    background: #fff;
+    border: 1px solid var(--oc-primary);
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    color: var(--oc-primary);
+}
+
+.oc-remove-filter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    background: transparent;
+    border: none;
+    border-radius: 50%;
+    color: var(--primary);
+    font-size: 1.125rem;
+    cursor: pointer;
+    line-height: 1;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.oc-remove-filter:hover {
+    background: var(--oc-primary);
+    color: #fff;
+}
+
+/* Operators Grid */
+.oc-operators-comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Comparison Card */
+.oc-comparison-card {
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-lg);
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.oc-comparison-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--oc-shadow-lg);
+}
+
+.oc-comparison-card.featured {
+    border: 2px solid var(--oc-primary);
+    background: linear-gradient(to bottom, #fafafa, #fff);
+}
+
+.oc-comparison-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--oc-primary);
+    border-radius: var(--oc-radius-lg) var(--oc-radius-lg) 0 0;
+}
+
+.oc-card-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.oc-card-badge.oc-featured {
+    background: var(--oc-primary);
+    color: #fff;
+}
+
+.oc-card-header {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--oc-border);
+}
+
+.oc-operator-logo {
+    flex-shrink: 0;
+}
+
+.oc-operator-logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: var(--oc-radius);
+}
+
+.oc-operator-logo .oc-logo-fallback {
+    width: 64px;
+    height: 64px;
+    font-size: 1.5rem;
+}
+
+.oc-operator-basic-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.oc-operator-name {
+    margin: 0 0 0.375rem;
+    font-size: 1.125rem;
+    line-height: 1.3;
+}
+
+.oc-operator-name a {
+    color: var(--oc-text);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.oc-operator-name a:hover {
+    color: var(--oc-primary);
+}
+
+.oc-license-badge {
+    display: inline-block;
+    padding: 0.1875rem 0.5rem;
+    background: var(--oc-bg-alt);
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--oc-text-light);
+}
+
+.oc-rating-display {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.oc-stars {
+    display: flex;
+    gap: 0.125rem;
+}
+
+.oc-stars .star {
+    font-size: 0.875rem;
+}
+
+.oc-rating-value {
+    margin-left: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--oc-text);
+}
+
+/* Bonus Section */
+.oc-card-bonus {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.oc-bonus-label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #15803d;
+    margin-bottom: 0.25rem;
+}
+
+.oc-bonus-value {
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #166534;
+}
+
+.oc-bonus-type-badge {
+    display: inline-block;
+    margin-top: 0.375rem;
+    padding: 0.1875rem 0.5rem;
+    background: rgba(22, 101, 52, 0.1);
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    color: #166534;
+}
+
+/* Details Section */
+.oc-card-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.oc-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8125rem;
+}
+
+.oc-detail-label {
+    color: var(--oc-text-light);
+}
+
+.oc-detail-value {
+    font-weight: 500;
+    color: var(--oc-text);
+}
+
+/* Pros Section */
+.oc-card-pros {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    padding: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.oc-pros-label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--oc-success);
+    margin-bottom: 0.5rem;
+}
+
+.oc-pros-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.oc-pros-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--oc-text);
+    margin-bottom: 0.375rem;
+}
+
+.oc-pros-list li:last-child {
+    margin-bottom: 0;
+}
+
+.oc-pros-list .dashicons {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: var(--oc-success);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+}
+
+/* Card Actions */
+.oc-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-card-actions .oc-visit-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--oc-primary);
+    color: #fff;
+    text-align: center;
+    border-radius: var(--oc-radius);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+
+.oc-card-actions .oc-visit-btn:hover {
+    background: var(--oc-primary-dark);
+    color: #fff;
+}
+
+.oc-review-link {
+    padding: 0.75rem 1rem;
+    background: var(--oc-bg-alt);
+    color: var(--oc-text);
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    transition: background 0.2s;
+    white-space: nowrap;
+}
+
+.oc-review-link:hover {
+    background: var(--oc-border);
+    color: var(--oc-text);
+}
+
+/* No Results */
+.oc-no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+}
+
+.oc-no-results p {
+    margin: 0 0 1.5rem;
+    font-size: 1.125rem;
+    color: var(--oc-text-light);
+}
+
+.oc-no-results .button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--oc-primary);
+    color: #fff;
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.oc-no-results .button:hover {
+    background: var(--oc-primary-dark);
+    color: #fff;
+}
+
+/* Pagination */
+.oc-pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.oc-pagination .page-numbers {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.75rem;
+    margin: 0 0.25rem;
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    color: var(--oc-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.oc-pagination .page-numbers:hover {
+    background: var(--oc-bg-alt);
+    border-color: var(--oc-text-light);
+}
+
+.oc-pagination .page-numbers.current {
+    background: var(--oc-primary);
+    border-color: var(--oc-primary);
+    color: #fff;
+}
+
+.oc-pagination .page-numbers.dots {
+    background: transparent;
+    border: none;
+}
+
+.oc-pagination .page-numbers.prev,
+.oc-pagination .page-numbers.next {
+    padding: 0 1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .oc-comparison-layout {
+        grid-template-columns: 250px 1fr;
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .oc-comparison-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .oc-comparison-sidebar {
+        position: static;
+        order: -1;
+    }
+    
+    .oc-operators-comparison-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .oc-comparison-title {
+        font-size: 1.5rem;
+    }
+    
+    .oc-comparison-description {
+        font-size: 1rem;
+    }
+    
+    .oc-card-header {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .oc-operator-basic-info {
+        align-items: center;
+    }
+    
+    .oc-card-actions {
+        flex-direction: column;
+    }
+    
+    .oc-review-link {
+        text-align: center;
+    }
+    
+    .oc-active-filters-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .oc-comparison-card {
+        padding: 1.25rem;
+    }
+    
+    .oc-bonus-value {
+        font-size: 1.125rem;
+    }
+    
+    .oc-card-actions .oc-visit-btn,
+    .oc-review-link {
+        padding: 0.625rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+}
+
