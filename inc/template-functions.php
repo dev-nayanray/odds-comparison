@@ -1,9 +1,9 @@
 <?php
 /**
  * Template Functions
- * 
+ *
  * Custom template tags and functions for the theme.
- * 
+ *
  * @package Odds_Comparison
  * @since 1.0.0
  */
@@ -11,6 +11,89 @@
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
+
+/**
+ * Load custom templates for custom post types
+ *
+ * @since 1.0.0
+ *
+ * @param string $template Template file path
+ * @return string Modified template file path
+ */
+function oc_load_custom_templates( $template ) {
+    // Check if we're on a custom post type
+    if ( is_singular( 'match' ) ) {
+        $custom_template = oc_locate_template( 'single-match.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+
+    if ( is_singular( 'operator' ) ) {
+        $custom_template = oc_locate_template( 'single-operator.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+
+    // Check for archive templates
+    if ( is_post_type_archive( 'match' ) ) {
+        $custom_template = oc_locate_template( 'archive-match.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+
+    if ( is_post_type_archive( 'operator' ) ) {
+        $custom_template = oc_locate_template( 'archive-operator.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+
+    // Check for taxonomy templates
+    if ( is_tax( 'league' ) || is_tax( 'sport' ) || is_tax( 'team' ) || is_tax( 'license' ) ) {
+        $custom_template = oc_locate_template( 'archive-match.php' );
+        if ( $custom_template ) {
+            return $custom_template;
+        }
+    }
+
+    return $template;
+}
+add_filter( 'template_include', 'oc_load_custom_templates', 99 );
+
+/**
+ * Locate template file in plugin directory
+ *
+ * @since 1.0.0
+ *
+ * @param string $template_name Template file name
+ * @return string|false Template file path or false if not found
+ */
+function oc_locate_template( $template_name ) {
+    $template_path = OC_PLUGIN_DIR . 'templates/' . $template_name;
+
+    if ( file_exists( $template_path ) ) {
+        return $template_path;
+    }
+
+    return false;
+}
+
+/**
+ * Add custom template directories to theme template hierarchy
+ *
+ * @since 1.0.0
+ *
+ * @param array $template_hierarchy Template hierarchy
+ * @return array Modified template hierarchy
+ */
+function oc_add_template_hierarchy( $template_hierarchy ) {
+    array_unshift( $template_hierarchy, 'templates/' );
+    return $template_hierarchy;
+}
+add_filter( 'theme_template_hierarchy', 'oc_add_template_hierarchy' );
 
 /**
  * Output the theme credit

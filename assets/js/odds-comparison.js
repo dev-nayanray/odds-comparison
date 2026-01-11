@@ -1353,6 +1353,7 @@ function updateCouponUI() {
     const emptyState = document.querySelector('.oc-coupon-empty');
     const betItems = document.querySelector('.oc-bet-items');
     const badge = document.querySelector('.oc-popup-badge, .oc-coupon-badge');
+    const headerCount = document.querySelector('.oc-coupon-count');
     const count = couponItems.length;
 
     // Update badge count
@@ -1360,10 +1361,14 @@ function updateCouponUI() {
         badge.textContent = count;
     }
 
-    // Update header badge
-    const headerBadge = document.querySelector('.oc-popup-badge');
-    if (headerBadge) {
-        headerBadge.textContent = count;
+    // Update header count
+    if (headerCount) {
+        headerCount.textContent = count;
+        if (count > 0) {
+            headerCount.style.display = 'inline-block';
+        } else {
+            headerCount.style.display = 'none';
+        }
     }
 
     // Show empty state or items

@@ -60,225 +60,211 @@ get_header(); ?>
                     </svg>
                 </a>
             </div>
-            
+
             <div class="oc-matches-cards">
-                <!-- Match Card 1 -->
-                <article class="oc-match-card-horizontal">
-                    <div class="oc-match-time-badge">
-                        <span class="oc-match-time">8:00 PM</span>
-                    </div>
-                    
-                    <div class="oc-match-teams-compact">
-                        <div class="oc-team-compact oc-team-home">
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/atletico-madrid.png' ); ?>" alt="Atlético Madrid" class="oc-team-logo">
+                <?php
+                $live_matches = oc_get_live_matches( 2 ); // Get 2 live matches for homepage
+                if ( ! empty( $live_matches ) ) :
+                    foreach ( $live_matches as $match ) :
+                        $match_id = $match['ID'];
+                        $home_team_name = $match['home_team'];
+                        $away_team_name = $match['away_team'];
+                        $match_time = $match['match_time'];
+                        $best_odds = oc_get_best_odds( $match_id );
+
+                        // Get team logos from taxonomy
+                        $home_team_logo = '';
+                        $away_team_logo = '';
+                        if ( ! empty( $match['teams'] ) ) {
+                            foreach ( $match['teams'] as $team ) {
+                                $logo = get_term_meta( $team->term_id, 'oc_team_logo', true );
+                                if ( $team->name === $home_team_name && $logo ) {
+                                    $home_team_logo = $logo;
+                                } elseif ( $team->name === $away_team_name && $logo ) {
+                                    $away_team_logo = $logo;
+                                }
+                            }
+                        }
+
+                        // Fallback to default logos if not found
+                        if ( empty( $home_team_logo ) ) {
+                            $home_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                        }
+                        if ( empty( $away_team_logo ) ) {
+                            $away_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                        }
+                        ?>
+                        <article class="oc-match-card-horizontal">
+                            <div class="oc-match-time-badge">
+                                <span class="oc-match-time"><?php echo $match_time ? esc_html( date_i18n( 'H:i', strtotime( $match_time ) ) ) : 'TBD'; ?></span>
                             </div>
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Atlético Madrid', 'odds-comparison' ); ?></span>
-                        </div>
-                        
-                        <div class="oc-vs-compact">
-                            <span class="oc-vs-text">VS</span>
-                        </div>
-                        
-                        <div class="oc-team-compact oc-team-away">
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Real Madrid', 'odds-comparison' ); ?></span>
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/real-madrid.png' ); ?>" alt="Real Madrid" class="oc-team-logo">
+
+                            <div class="oc-match-teams-compact">
+                                <div class="oc-team-compact oc-team-home">
+                                    <div class="oc-team-logo-wrapper">
+                                        <img src="<?php echo esc_url( $home_team_logo ); ?>" alt="<?php echo esc_attr( $home_team_name ); ?>" class="oc-team-logo">
+                                    </div>
+                                    <span class="oc-team-name-compact"><?php echo esc_html( $home_team_name ); ?></span>
+                                </div>
+
+                                <div class="oc-vs-compact">
+                                    <span class="oc-vs-text">VS</span>
+                                </div>
+
+                                <div class="oc-team-compact oc-team-away">
+                                    <span class="oc-team-name-compact"><?php echo esc_html( $away_team_name ); ?></span>
+                                    <div class="oc-team-logo-wrapper">
+                                        <img src="<?php echo esc_url( $away_team_logo ); ?>" alt="<?php echo esc_attr( $away_team_name ); ?>" class="oc-team-logo">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="oc-match-odds-compact">
-                        <button class="oc-odd-btn-compact" data-odds="3.1" data-type="home" data-match="atletico-vs-real">
-                            <span class="oc-odd-label">1</span>
-                            <span class="oc-odd-value">3.1</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="3.6" data-type="draw" data-match="atletico-vs-real">
-                            <span class="oc-odd-label">X</span>
-                            <span class="oc-odd-value">3.6</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="2.41" data-type="away" data-match="atletico-vs-real">
-                            <span class="oc-odd-label">2</span>
-                            <span class="oc-odd-value">2.41</span>
-                        </button>
-                        <a href="#" class="oc-more-odds-link">
-                            <span><?php esc_html_e( 'Más Cuotas', 'odds-comparison' ); ?></span>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </article>
-                
-                <!-- Match Card 2 -->
-                <article class="oc-match-card-horizontal">
-                    <div class="oc-match-time-badge">
-                        <span class="oc-match-time">7:00 PM</span>
-                    </div>
-                    
-                    <div class="oc-match-teams-compact">
-                        <div class="oc-team-compact oc-team-home">
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/psg.png' ); ?>" alt="PSG" class="oc-team-logo">
+
+                            <div class="oc-match-odds-compact">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['home']['odds'] ); ?>" data-type="home" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                    <span class="oc-odd-label">1</span>
+                                    <span class="oc-odd-value"><?php echo $best_odds['home']['odds'] ? esc_html( number_format( $best_odds['home']['odds'], 2 ) ) : '-'; ?></span>
+                                </button>
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['draw']['odds'] ); ?>" data-type="draw" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                    <span class="oc-odd-label">X</span>
+                                    <span class="oc-odd-value"><?php echo $best_odds['draw']['odds'] ? esc_html( number_format( $best_odds['draw']['odds'], 2 ) ) : '-'; ?></span>
+                                </button>
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['away']['odds'] ); ?>" data-type="away" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                    <span class="oc-odd-label">2</span>
+                                    <span class="oc-odd-value"><?php echo $best_odds['away']['odds'] ? esc_html( number_format( $best_odds['away']['odds'], 2 ) ) : '-'; ?></span>
+                                </button>
+                                <a href="<?php echo esc_url( get_permalink( $match_id ) ); ?>" class="oc-more-odds-link">
+                                    <span><?php esc_html_e( 'Más Cuotas', 'odds-comparison' ); ?></span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                        <polyline points="15 3 21 3 21 9"/>
+                                        <line x1="10" y1="14" x2="21" y2="3"/>
+                                    </svg>
+                                </a>
                             </div>
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'PSG', 'odds-comparison' ); ?></span>
-                        </div>
-                        
-                        <div class="oc-vs-compact">
-                            <span class="oc-vs-text">VS</span>
-                        </div>
-                        
-                        <div class="oc-team-compact oc-team-away">
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Olympique Marsella', 'odds-comparison' ); ?></span>
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/marseille.png' ); ?>" alt="Olympique Marsella" class="oc-team-logo">
-                            </div>
-                        </div>
+                        </article>
+                    <?php endforeach;
+                else : ?>
+                    <div class="oc-no-matches">
+                        <p><?php esc_html_e( 'No hay partidos programados para hoy.', 'odds-comparison' ); ?></p>
                     </div>
-                    
-                    <div class="oc-match-odds-compact">
-                        <button class="oc-odd-btn-compact" data-odds="1.56" data-type="home" data-match="psg-vs-marseille">
-                            <span class="oc-odd-label">1</span>
-                            <span class="oc-odd-value">1.56</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="4.51" data-type="draw" data-match="psg-vs-marseille">
-                            <span class="oc-odd-label">X</span>
-                            <span class="oc-odd-value">4.51</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="6" data-type="away" data-match="psg-vs-marseille">
-                            <span class="oc-odd-label">2</span>
-                            <span class="oc-odd-value">6</span>
-                        </button>
-                        <a href="#" class="oc-more-odds-link">
-                            <span><?php esc_html_e( 'Más Cuotas', 'odds-comparison' ); ?></span>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </article>
+                <?php endif; ?>
             </div>
         </section>
         
-        <!-- Friday Matches -->
-        <section class="oc-section oc-upcoming-section">
-            <div class="oc-section-header">
-                <h2><?php esc_html_e( 'VIERNES, 9 DE ENERO', 'odds-comparison' ); ?></h2>
-            </div>
-            
-            <div class="oc-matches-cards">
-                <article class="oc-match-card-horizontal">
-                    <div class="oc-match-time-badge">
-                        <span class="oc-match-time">9:00 PM</span>
-                    </div>
-                    
-                    <div class="oc-match-teams-compact">
-                        <div class="oc-team-compact oc-team-home">
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/getafe.png' ); ?>" alt="Getafe" class="oc-team-logo">
+        <!-- Upcoming Matches -->
+        <?php
+        $grouped_matches = oc_get_grouped_matches();
+        $displayed_sections = 0;
+        $max_sections = 2; // Show up to 2 upcoming date sections
+
+        foreach ( $grouped_matches as $date_key => $date_group ) :
+            if ( $displayed_sections >= $max_sections ) {
+                break;
+            }
+
+            // Skip today section as it's already shown above
+            if ( $date_key === 'today' ) {
+                continue;
+            }
+
+            $displayed_sections++;
+            ?>
+            <section class="oc-section oc-upcoming-section">
+                <div class="oc-section-header">
+                    <h2><?php echo esc_html( $date_group['label'] ); ?></h2>
+                </div>
+
+                <div class="oc-matches-cards">
+                    <?php
+                    $matches_shown = 0;
+                    foreach ( $date_group['matches'] as $match ) :
+                        if ( $matches_shown >= 3 ) { // Limit to 3 matches per date section
+                            break;
+                        }
+                        $matches_shown++;
+
+                        $match_id = $match['id'];
+                        $home_team_name = $match['home_team'];
+                        $away_team_name = $match['away_team'];
+                        $match_time = $match['time'];
+                        $best_odds = oc_get_best_odds( $match_id );
+
+                        // Get team logos from taxonomy
+                        $home_team_logo = '';
+                        $away_team_logo = '';
+                        if ( ! empty( $match['home_logo'] ) ) {
+                            $home_team_logo = $match['home_logo'];
+                        }
+                        if ( ! empty( $match['away_logo'] ) ) {
+                            $away_team_logo = $match['away_logo'];
+                        }
+
+                        // Fallback to default logos if not found
+                        if ( empty( $home_team_logo ) ) {
+                            $home_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                        }
+                        if ( empty( $away_team_logo ) ) {
+                            $away_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                        }
+                        ?>
+                        <article class="oc-match-card-horizontal">
+                            <div class="oc-match-time-badge">
+                                <span class="oc-match-time"><?php echo $match_time ? esc_html( $match_time ) : 'TBD'; ?></span>
                             </div>
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Getafe', 'odds-comparison' ); ?></span>
-                        </div>
-                        
-                        <div class="oc-vs-compact">
-                            <span class="oc-vs-text">VS</span>
-                        </div>
-                        
-                        <div class="oc-team-compact oc-team-away">
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Real Sociedad', 'odds-comparison' ); ?></span>
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/real-sociedad.png' ); ?>" alt="Real Sociedad" class="oc-team-logo">
+
+                            <div class="oc-match-teams-compact">
+                                <div class="oc-team-compact oc-team-home">
+                                    <div class="oc-team-logo-wrapper">
+                                        <img src="<?php echo esc_url( $home_team_logo ); ?>" alt="<?php echo esc_attr( $home_team_name ); ?>" class="oc-team-logo">
+                                    </div>
+                                    <span class="oc-team-name-compact"><?php echo esc_html( $home_team_name ); ?></span>
+                                </div>
+
+                                <div class="oc-vs-compact">
+                                    <span class="oc-vs-text">VS</span>
+                                </div>
+
+                                <div class="oc-team-compact oc-team-away">
+                                    <span class="oc-team-name-compact"><?php echo esc_html( $away_team_name ); ?></span>
+                                    <div class="oc-team-logo-wrapper">
+                                        <img src="<?php echo esc_url( $away_team_logo ); ?>" alt="<?php echo esc_attr( $away_team_name ); ?>" class="oc-team-logo">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="oc-match-odds-compact">
-                        <button class="oc-odd-btn-compact" data-odds="3.5" data-type="home" data-match="getafe-vs-real-sociedad">
-                            <span class="oc-odd-label">1</span>
-                            <span class="oc-odd-value">3.5</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="3" data-type="draw" data-match="getafe-vs-real-sociedad">
-                            <span class="oc-odd-label">X</span>
-                            <span class="oc-odd-value">3</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="2.55" data-type="away" data-match="getafe-vs-real-sociedad">
-                            <span class="oc-odd-label">2</span>
-                            <span class="oc-odd-value">2.55</span>
-                        </button>
-                        <a href="#" class="oc-more-odds-link">
-                            <span><?php esc_html_e( 'Más Cuotas', 'odds-comparison' ); ?></span>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </article>
-            </div>
-        </section>
-        
-        <!-- Saturday Matches -->
-        <section class="oc-section oc-upcoming-section">
-            <div class="oc-section-header">
-                <h2><?php esc_html_e( 'SÁBADO, 10 DE ENERO', 'odds-comparison' ); ?></h2>
-            </div>
-            
-            <div class="oc-matches-cards">
-                <article class="oc-match-card-horizontal">
-                    <div class="oc-match-time-badge">
-                        <span class="oc-match-time">2:00 PM</span>
-                    </div>
-                    
-                    <div class="oc-match-teams-compact">
-                        <div class="oc-team-compact oc-team-home">
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/oviedo.png' ); ?>" alt="Oviedo" class="oc-team-logo">
+
+                            <div class="oc-match-odds-compact">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['home']['odds'] ); ?>" data-type="home" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                    <span class="oc-odd-label">1</span>
+                                    <span class="oc-odd-value"><?php echo $best_odds['home']['odds'] ? esc_html( number_format( $best_odds['home']['odds'], 2 ) ) : '-'; ?></span>
+                                </button>
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['draw']['odds'] ); ?>" data-type="draw" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                    <span class="oc-odd-label">X</span>
+                                    <span class="oc-odd-value"><?php echo $best_odds['draw']['odds'] ? esc_html( number_format( $best_odds['draw']['odds'], 2 ) ) : '-'; ?></span>
+                                </button>
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['away']['odds'] ); ?>" data-type="away" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                    <span class="oc-odd-label">2</span>
+                                    <span class="oc-odd-value"><?php echo $best_odds['away']['odds'] ? esc_html( number_format( $best_odds['away']['odds'], 2 ) ) : '-'; ?></span>
+                                </button>
+                                <a href="<?php echo esc_url( get_permalink( $match_id ) ); ?>" class="oc-more-odds-link">
+                                    <span><?php esc_html_e( 'Más Cuotas', 'odds-comparison' ); ?></span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                        <polyline points="15 3 21 3 21 9"/>
+                                        <line x1="10" y1="14" x2="21" y2="3"/>
+                                    </svg>
+                                </a>
                             </div>
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Oviedo', 'odds-comparison' ); ?></span>
+                        </article>
+                    <?php endforeach; ?>
+
+                    <?php if ( $matches_shown === 0 ) : ?>
+                        <div class="oc-no-matches">
+                            <p><?php esc_html_e( 'No hay partidos programados para esta fecha.', 'odds-comparison' ); ?></p>
                         </div>
-                        
-                        <div class="oc-vs-compact">
-                            <span class="oc-vs-text">VS</span>
-                        </div>
-                        
-                        <div class="oc-team-compact oc-team-away">
-                            <span class="oc-team-name-compact"><?php esc_html_e( 'Betis', 'odds-comparison' ); ?></span>
-                            <div class="oc-team-logo-wrapper">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/teams/betis.png' ); ?>" alt="Betis" class="oc-team-logo">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="oc-match-odds-compact">
-                        <button class="oc-odd-btn-compact" data-odds="4.37" data-type="home" data-match="oviedo-vs-betis">
-                            <span class="oc-odd-label">1</span>
-                            <span class="oc-odd-value">4.37</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="3.6" data-type="draw" data-match="oviedo-vs-betis">
-                            <span class="oc-odd-label">X</span>
-                            <span class="oc-odd-value">3.6</span>
-                        </button>
-                        <button class="oc-odd-btn-compact" data-odds="1.98" data-type="away" data-match="oviedo-vs-betis">
-                            <span class="oc-odd-label">2</span>
-                            <span class="oc-odd-value">1.98</span>
-                        </button>
-                        <a href="#" class="oc-more-odds-link">
-                            <span><?php esc_html_e( 'Más Cuotas', 'odds-comparison' ); ?></span>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                                <polyline points="15 3 21 3 21 9"/>
-                                <line x1="10" y1="14" x2="21" y2="3"/>
-                            </svg>
-                        </a>
-                    </div>
-                </article>
-            </div>
-        </section>
+                    <?php endif; ?>
+                </div>
+            </section>
+        <?php endforeach; ?>
         
         <!-- View All Link -->
         <div class="oc-view-all-section">

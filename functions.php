@@ -95,7 +95,16 @@ add_action( 'after_setup_theme', 'oc_load_theme_files' );
 
 function oc_theme_setup() {
 
-    add_theme_support( 'title-tag' );
+add_theme_support( 'title-tag' );
+
+// Fix for document title parts filter
+add_filter( 'document_title_parts', 'oc_fix_document_title_parts' );
+function oc_fix_document_title_parts( $parts ) {
+    if ( ! is_array( $parts ) ) {
+        $parts = array( $parts );
+    }
+    return $parts;
+}
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'automatic-feed-links' );
     add_theme_support( 'customize-selective-refresh-widgets' );

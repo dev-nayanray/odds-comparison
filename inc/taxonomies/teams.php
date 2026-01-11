@@ -69,7 +69,7 @@ add_action( 'init', 'oc_register_teams_taxonomy', 0 );
 
 /**
  * Add team meta fields
- * 
+ *
  * @since 1.0.0
  */
 function oc_add_team_meta_fields() {
@@ -83,6 +83,28 @@ function oc_add_team_meta_fields() {
     add_action( 'edited_team', 'oc_save_team_meta' );
 }
 add_action( 'init', 'oc_add_team_meta_fields' );
+
+/**
+ * Enqueue media uploader scripts for team taxonomy
+ *
+ * @since 1.0.0
+ */
+function oc_enqueue_team_media_scripts() {
+    $screen = get_current_screen();
+
+    // Check if we're on the team taxonomy edit/add pages
+    if ( $screen && ( strpos( $screen->id, 'team' ) !== false || ( isset( $_GET['taxonomy'] ) && $_GET['taxonomy'] === 'team' ) ) ) {
+        wp_enqueue_media();
+        wp_enqueue_script( 'oc-team-logo-upload', OC_ASSETS_URI . '/js/team-logo-upload.js', array( 'jquery' ), OC_THEME_VERSION, true );
+
+        // Localize script with translation strings
+        wp_localize_script( 'oc-team-logo-upload', 'oc_team_logo_upload_vars', array(
+            'select_title' => __( 'Select Team Logo', 'odds-comparison' ),
+            'button_text'  => __( 'Use this image', 'odds-comparison' ),
+        ) );
+    }
+}
+add_action( 'admin_enqueue_scripts', 'oc_enqueue_team_media_scripts' );
 
 /**
  * Render team meta fields (add form)
