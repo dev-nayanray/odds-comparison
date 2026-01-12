@@ -845,3 +845,28 @@ function oc_comparison_tool_shortcode( $atts ) {
 }
 add_shortcode( 'oc_comparison_tool', 'oc_comparison_tool_shortcode' );
 
+/**
+ * [oc_premier_league] shortcode
+ *
+ * Display upcoming Premier League matches with date/day display and betting odds.
+ *
+ * @since 1.0.0
+ *
+ * @param array $atts Shortcode attributes
+ * @return string
+ */
+function oc_premier_league_shortcode( $atts ) {
+    $atts = shortcode_atts( array(
+        'days'      => 7,      // Number of days to show matches for
+        'limit'     => 10,     // Maximum number of matches to display
+        'show_odds' => 'yes',  // Show betting odds
+    ), $atts );
+
+    return oc_render_premier_league_section( array(
+        'days'      => absint( $atts['days'] ),
+        'limit'     => absint( $atts['limit'] ),
+        'show_odds' => 'yes' === $atts['show_odds'],
+    ) );
+}
+add_shortcode( 'oc_premier_league', 'oc_premier_league_shortcode' );
+

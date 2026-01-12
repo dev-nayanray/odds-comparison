@@ -66,7 +66,7 @@ function oc_create_database_tables() {
     
     // Operators Ratings Table (for aggregated ratings)
     $table_name_ratings = $wpdb->prefix . 'oc_operator_ratings';
-    
+
     $sql_ratings = "CREATE TABLE {$table_name_ratings} (
         id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
         operator_id bigint(20) UNSIGNED NOT NULL,
@@ -80,6 +80,63 @@ function oc_create_database_tables() {
         UNIQUE KEY operator_source (operator_id, rating_source),
         KEY operator_id (operator_id)
     ) {$charset_collate};";
+
+    // User Balance Table
+    $table_name_balance = $wpdb->prefix . 'oc_user_balance';
+
+    $sql_balance = "CREATE TABLE {$table_name_balance} (
+        id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        user_id bigint(20) UNSIGNED NOT NULL,
+        balance decimal(10,2) NOT NULL DEFAULT 0.00,
+        created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY  (id),
+        UNIQUE KEY user_id (user_id),
+        KEY balance (balance)
+    ) {$charset_collate};";
+
+    // User Bets Table
+    $table_name_bets = $wpdb->prefix . 'oc_user_bets';
+
+    $sql_bets = "CREATE TABLE {$table_name_bets} (
+        id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        user_id bigint(20) UNSIGNED NOT NULL,
+        match_id bigint(20) UNSIGNED NOT NULL,
+        bet_type varchar(20) NOT NULL,
+        stake decimal(10,2) NOT NULL,
+        odds decimal(5,2) NOT NULL,
+        potential_win decimal(10,2) NOT NULL,
+        status varchar(20) NOT NULL DEFAULT 'pending',
+        placed_at timestamp DEFAULT CURRENT_TIMESTAMP,
+        settled_at timestamp NULL DEFAULT NULL,
+        result varchar(20) DEFAULT NULL,
+        payout decimal(10,2) DEFAULT 0.00,
+        created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+        updated_at timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY  (id),
+        KEY user_id (user_id),
+        KEY match_id (match_id),
+        KEY status (status),
+        KEY placed_at (placed_at),
+        KEY bet_type (bet_type)
+    ) {$charset_collate};";
+
+    // Betting Transactions Table
+    $table_name_transactions = $wpdb->prefix . 'oc_betting_transactions';
+
+    $sql_transactions = "CREATE TABLE {$table_name_transactions} (
+        id bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+        user_id bigint(20) UNSIGNED NOT NULL,
+        transaction_type varchar(50) NOT NULL,
+        amount decimal(10,2) NOT NULL,
+        balance_after decimal(10,2) NOT NULL,
+        description text,
+        created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY  (id),
+        KEY user_id (user_id),
+        KEY transaction_type (transaction_type),
+        KEY created_at (created_at)
+    ) {$charset_collate};";
     
     // Include WordPress dbDelta function
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -88,6 +145,9 @@ function oc_create_database_tables() {
     dbDelta( $sql_odds );
     dbDelta( $sql_clicks );
     dbDelta( $sql_ratings );
+    dbDelta( $sql_balance );
+    dbDelta( $sql_bets );
+    dbDelta( $sql_transactions );
     
     // Store version for future updates
     update_option( 'oc_db_version', OC_THEME_VERSION );
@@ -105,6 +165,9 @@ function oc_drop_database_tables() {
         $wpdb->prefix . 'oc_match_odds',
         $wpdb->prefix . 'oc_affiliate_clicks',
         $wpdb->prefix . 'oc_operator_ratings',
+        $wpdb->prefix . 'oc_user_balance',
+        $wpdb->prefix . 'oc_user_bets',
+        $wpdb->prefix . 'oc_betting_transactions',
     );
     
     foreach ( $tables as $table ) {
@@ -412,6 +475,16 @@ function oc_get_odds_comparison( $match_id ) {
     );
     
     foreach ( $bookmakers as $b ) {
+        // Get additional bookmaker data from post meta
+        $affiliate_url = get_post_meta( $b['bookmaker_id'], 'oc_operator_affiliate_url', true );
+        $rating = get_post_meta( $b['bookmaker_id'], 'oc_operator_rating', true );
+        
+        // Get bookmaker logo (featured image)
+        $logo = '';
+        if ( has_post_thumbnail( $b['bookmaker_id'] ) ) {
+            $logo = get_the_post_thumbnail_url( $b['bookmaker_id'], 'medium' );
+        }
+        
         $bookmaker_data = array(
             'id'           => $b['bookmaker_id'],
             'name'         => $b['operator_name'],
@@ -419,6 +492,9 @@ function oc_get_odds_comparison( $match_id ) {
             'odds_draw'    => $b['odds_draw'],
             'odds_away'    => $b['odds_away'],
             'last_updated' => $b['last_updated'],
+            'affiliate_url'=> $affiliate_url ?: '',
+            'rating'       => $rating ?: 0,
+            'logo'         => $logo ?: '',
             'is_best'      => array(
                 'home' => (int) $b['bookmaker_id'] === (int) $best['home']['bookmaker_id'],
                 'draw' => (int) $b['bookmaker_id'] === (int) $best['draw']['bookmaker_id'],
@@ -481,39 +557,7 @@ if ( ! function_exists( 'oc_get_upcoming_matches' ) ) {
 }
 }
 
-/**
- * Record affiliate click
- * 
- * @since 1.0.0
- * 
- * @param int   $operator_id Operator post ID
- * @param array $data        Click data
- * @return int|false Inserted click ID or false
- */
-function oc_record_affiliate_click( $operator_id, $data = array() ) {
-    global $wpdb;
-    
-    $table_name = $wpdb->prefix . 'oc_affiliate_clicks';
-    
-    // Hash IP for privacy
-    $ip_hash = defined( 'SALTPERSONAL' ) 
-        ? hash( 'sha256', $_SERVER['REMOTE_ADDR'] . SALTPERSONAL )
-        : hash( 'sha256', $_SERVER['REMOTE_ADDR'] . 'personal_salt' );
-    
-    $click_data = array(
-        'operator_id'  => absint( $operator_id ),
-        'page_url'     => isset( $data['page_url'] ) ? esc_url_raw( $data['page_url'] ) : '',
-        'click_url'    => isset( $data['click_url'] ) ? esc_url_raw( $data['click_url'] ) : '',
-        'clicked_at'   => current_time( 'mysql' ),
-        'ip_hash'      => $ip_hash,
-        'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 500 ) : '',
-        'referer'      => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( $_SERVER['HTTP_REFERER'] ) : '',
-    );
-    
-    $format = array( '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
-    
-    return $wpdb->insert( $table_name, $click_data, $format );
-}
+
 
 /**
  * Mark click as converted
@@ -653,6 +697,9 @@ function oc_get_database_status() {
         $wpdb->prefix . 'oc_match_odds',
         $wpdb->prefix . 'oc_affiliate_clicks',
         $wpdb->prefix . 'oc_operator_ratings',
+        $wpdb->prefix . 'oc_user_balance',
+        $wpdb->prefix . 'oc_user_bets',
+        $wpdb->prefix . 'oc_betting_transactions',
     );
     
     $status = array();
@@ -691,27 +738,70 @@ function oc_clean_old_odds( $days_old = 30 ) {
 }
 
 /**
- * Optimize database tables
- * 
+ * Save odds data for a match
+ *
+ * Saves or updates odds data for multiple bookmakers for a given match.
+ *
  * @since 1.0.0
- * 
+ *
+ * @param int   $match_id   Match post ID
+ * @param array $odds_data  Array of odds data, each containing bookmaker_id and odds
+ * @return bool Success status
+ */
+function oc_save_match_odds( $match_id, $odds_data ) {
+    if ( ! $match_id || empty( $odds_data ) || ! is_array( $odds_data ) ) {
+        return false;
+    }
+
+    $success = true;
+
+    foreach ( $odds_data as $odds ) {
+        if ( ! isset( $odds['bookmaker_id'] ) ) {
+            continue;
+        }
+
+        $odds_entry = array(
+            'match_id'     => $match_id,
+            'bookmaker_id' => absint( $odds['bookmaker_id'] ),
+            'odds_home'    => isset( $odds['odds_home'] ) ? floatval( $odds['odds_home'] ) : null,
+            'odds_draw'    => isset( $odds['odds_draw'] ) ? floatval( $odds['odds_draw'] ) : null,
+            'odds_away'    => isset( $odds['odds_away'] ) ? floatval( $odds['odds_away'] ) : null,
+        );
+
+        // Use oc_insert_odds which handles both insert and update
+        if ( ! oc_insert_odds( $odds_entry ) ) {
+            $success = false;
+        }
+    }
+
+    // Clear cache after saving
+    oc_clear_odds_cache( $match_id );
+
+    return $success;
+}
+
+/**
+ * Optimize database tables
+ *
+ * @since 1.0.0
+ *
  * @return array Optimization results
  */
 function oc_optimize_tables() {
     global $wpdb;
-    
+
     $tables = array(
         $wpdb->prefix . 'oc_match_odds',
         $wpdb->prefix . 'oc_affiliate_clicks',
         $wpdb->prefix . 'oc_operator_ratings',
     );
-    
+
     $results = array();
-    
+
     foreach ( $tables as $table ) {
         $results[ $table ] = $wpdb->query( "OPTIMIZE TABLE {$table}" );
     }
-    
+
     return $results;
 }
 

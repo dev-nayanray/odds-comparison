@@ -23,6 +23,9 @@ define('OC_PLUGIN_BASENAME', plugin_basename(__FILE__));
 
 // Include core files
 require_once OC_PLUGIN_DIR . 'includes/functions.php';
+require_once OC_PLUGIN_DIR . 'inc/ajax.php';
+require_once OC_PLUGIN_DIR . 'inc/post-types/matches.php';
+require_once OC_PLUGIN_DIR . 'inc/admin/meta-boxes.php';
 
 /**
  * Main Plugin Class
@@ -437,6 +440,11 @@ class Odds_Comparison {
     public function admin_enqueue_scripts($hook) {
         if ($hook === 'post.php' || $hook === 'post-new.php') {
             wp_enqueue_script('odds-comparison-admin', OC_PLUGIN_URL . 'assets/js/admin.js', array('jquery'), OC_VERSION, true);
+
+            wp_localize_script('odds-comparison-admin', 'ocAjax', array(
+                'ajaxurl' => admin_url('admin-ajax.php'),
+                'nonce' => wp_create_nonce('oc_ajax_nonce')
+            ));
         }
     }
 
@@ -512,6 +520,10 @@ function oc_activate() {
     $plugin = new Odds_Comparison();
     $plugin->register_post_types();
     $plugin->register_taxonomies();
+
+    // Create database tables
+    require_once OC_PLUGIN_DIR . 'inc/database.php';
+    oc_create_database_tables();
 
     // Create comparison page
     $comparison_page = array(

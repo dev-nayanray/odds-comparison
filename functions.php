@@ -175,6 +175,14 @@ function oc_enqueue_scripts() {
         OC_THEME_VERSION
     );
 
+    // Coupon popup styles
+    wp_enqueue_style(
+        'oc-coupon-style',
+        OC_ASSETS_URI . '/css/coupon.css',
+        array( 'oc-odds-style' ),
+        OC_THEME_VERSION
+    );
+
     if ( is_rtl() ) {
         wp_enqueue_style(
             'oc-rtl-style',

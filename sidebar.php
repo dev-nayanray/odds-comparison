@@ -22,13 +22,12 @@ if ( ! defined( 'ABSPATH' ) ) {
         // Newsletter Section
         oc_render_newsletter_section();
         
-        // Check if we're on homepage
+        // Always show Pronósticos section (blog posts)
+        oc_render_pronosticos_section();
+
+        // Check if we're on homepage - also show Exclusivas section
         if ( is_front_page() || is_home() ) {
-            // Homepage: Show Exclusivas section instead of Pronósticos
             oc_render_exclusivas_section();
-        } else {
-            // Other pages: Show Pronósticos section (blog posts)
-            oc_render_pronosticos_section();
         }
         
         // Apuestas Section
@@ -44,14 +43,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 function oc_render_registration_section() {
     ?>
     <div class="sidebar-section oc-register-section">
-        <h3 class="sidebar-title"><?php esc_html_e( 'Regístrate en Betqio', 'odds-comparison' ); ?></h3>
-        <p class="register-description"><?php esc_html_e( 'Accede a las mejores cuotas y ofertas exclusivas', 'odds-comparison' ); ?></p>
+        <h3 class="sidebar-title"><?php esc_html_e( 'Register on Betqio', 'odds-comparison' ); ?></h3>
+        <p class="register-description"><?php esc_html_e( 'Access the best odds and exclusive offers', 'odds-comparison' ); ?></p>
         <div class="register-buttons">
             <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'login' ) ) ); ?>" class="oc-btn oc-login-btn-sidebar">
-                <?php esc_html_e( 'Iniciar sesión', 'odds-comparison' ); ?>
+                <?php esc_html_e( 'Log in', 'odds-comparison' ); ?>
             </a>
             <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'register' ) ) ); ?>" class="oc-btn oc-register-btn-sidebar">
-                <?php esc_html_e( 'Registrarse', 'odds-comparison' ); ?>
+                <?php esc_html_e( 'Register', 'odds-comparison' ); ?>
             </a>
         </div>
     </div>
@@ -65,12 +64,12 @@ function oc_render_newsletter_section() {
     ?>
     <div class="sidebar-section oc-newsletter-section">
         <h3 class="sidebar-title"><?php esc_html_e( 'Newsletter', 'odds-comparison' ); ?></h3>
-        <p class="newsletter-description"><?php esc_html_e( 'Suscríbase a nuestro correo electrónico para recibir las mejores predicciones y pronósticos deportivos', 'odds-comparison' ); ?></p>
+        <p class="newsletter-description"><?php esc_html_e( 'Subscribe to our email to receive the best sports predictions and forecasts', 'odds-comparison' ); ?></p>
         <form class="oc-newsletter-form" action="#" method="post">
             <div class="newsletter-input-wrapper">
-                <input type="email" name="oc_newsletter_email" placeholder="<?php esc_attr_e( 'Tu correo electrónico', 'odds-comparison' ); ?>" required class="newsletter-email-input">
+                <input type="email" name="oc_newsletter_email" placeholder="<?php esc_attr_e( 'Your email address', 'odds-comparison' ); ?>" required class="newsletter-email-input">
                 <button type="submit" class="oc-btn oc-newsletter-btn">
-                    <?php esc_html_e( 'Suscribirse', 'odds-comparison' ); ?>
+                    <?php esc_html_e( 'Subscribe', 'odds-comparison' ); ?>
                 </button>
             </div>
         </form>
@@ -153,7 +152,7 @@ function oc_render_exclusivas_section() {
     }
     ?>
     <div class="sidebar-section oc-exclusivas-section">
-        <h3 class="sidebar-title"><?php esc_html_e( 'Exclusivas', 'odds-comparison' ); ?></h3>
+        <h3 class="sidebar-title"><?php esc_html_e( 'Exclusives', 'odds-comparison' ); ?></h3>
         <div class="oc-exclusivas-list">
             <?php foreach ( $exclusivas as $index => $exclusiva ) : ?>
             <div class="oc-exclusiva-card">
@@ -175,7 +174,7 @@ function oc_render_exclusivas_section() {
                     <?php endif; ?>
                 </div>
                 <a href="<?php echo esc_url( $exclusiva['url'] ); ?>" class="oc-btn oc-exclusiva-btn" target="_blank" rel="nofollow">
-                    <?php esc_html_e( 'Ver', 'odds-comparison' ); ?>
+                    <?php esc_html_e( 'View', 'odds-comparison' ); ?>
                 </a>
             </div>
             <?php endforeach; ?>
@@ -357,9 +356,10 @@ function oc_render_pronosticos_section() {
     }
     ?>
     <div class="sidebar-section oc-pronosticos-section">
-        <h3 class="sidebar-title"><?php esc_html_e( 'Pronósticos', 'odds-comparison' ); ?></h3>
+        <h3 class="sidebar-title"><?php esc_html_e( 'Predictions', 'odds-comparison' ); ?></h3>
         <div class="oc-pronosticos-list">
             <?php foreach ( $recent_posts as $post ) : setup_postdata( $post ); ?>
+            <?php if ( get_the_title() === 'Home' ) continue; ?>
             <article class="oc-pronostico-card modern-post-card">
                 <div class="oc-post-left">
                     <div class="oc-post-thumbnail">
@@ -397,7 +397,7 @@ function oc_render_pronosticos_section() {
                     </div>
 
                     <a href="<?php the_permalink(); ?>" class="oc-read-more-link">
-                        <?php esc_html_e( 'Leer más', 'odds-comparison' ); ?>
+                        <?php esc_html_e( 'Read more', 'odds-comparison' ); ?>
                         <span class="oc-arrow">→</span>
                     </a>
                 </div>
@@ -407,7 +407,7 @@ function oc_render_pronosticos_section() {
 
         <div class="oc-view-all-container">
             <a href="<?php echo esc_url( get_permalink( get_option( 'page_for_posts' ) ) ); ?>" class="oc-view-all-link">
-                <?php esc_html_e( 'Ver todos los pronósticos', 'odds-comparison' ); ?>
+                <?php esc_html_e( 'View all predictions', 'odds-comparison' ); ?>
             </a>
         </div>
     </div>
@@ -607,7 +607,7 @@ function oc_render_apuestas_section() {
     );
     ?>
     <div class="sidebar-section oc-apuestas-section">
-        <h3 class="sidebar-title"><?php esc_html_e( 'Apuestas', 'odds-comparison' ); ?></h3>
+        <h3 class="sidebar-title"><?php esc_html_e( 'Bets', 'odds-comparison' ); ?></h3>
         <div class="oc-apuestas-list">
             <?php foreach ( $apuestas as $apuesta ) : ?>
             <div class="oc-apuesta-card">
@@ -618,7 +618,7 @@ function oc_render_apuestas_section() {
                     <span class="oc-bonus-amount"><?php echo esc_html( $apuesta['bonus'] ); ?></span>
                 </div>
                 <a href="<?php echo esc_url( $apuesta['url'] ); ?>" class="oc-btn oc-apuesta-btn">
-                    <?php esc_html_e( 'Apuesta', 'odds-comparison' ); ?>
+                    <?php esc_html_e( 'Bet', 'odds-comparison' ); ?>
                 </a>
             </div>
             <?php endforeach; ?>

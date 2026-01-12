@@ -200,11 +200,11 @@ do_action( 'oc_before_site_wrapper' );
     ?>
 
     <!-- Coupon Popup Modal -->
-    <div id="oc-coupon-popup" class="oc-coupon-popup-overlay" style=" ">
+    <div id="oc-coupon-popup" class="oc-coupon-popup-overlay" style="display: none;">
         <div class="oc-coupon-popup">
             <div class="oc-coupon-header">
                 <div class="oc-coupon-title">
-                    <span class="oc-coupon-count">4</span>
+                    <span class="oc-coupon-count">0</span>
                     <span class="oc-coupon-label"><?php esc_html_e( 'Combined accumulator', 'odds-comparison' ); ?></span>
                 </div>
                 <button class="oc-coupon-close" aria-label="<?php esc_attr_e( 'Close coupon', 'odds-comparison' ); ?>">
@@ -596,7 +596,7 @@ do_action( 'oc_before_site_wrapper' );
 
                 <!-- Delete All Button -->
                 <div class="oc-coupon-actions">
-                    <button class="oc-delete-all-btn">
+                    <button class="oc-clear-all-btn" style="display: none;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="3 6 5 6 21 6"></polyline>
                             <path d="m19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>

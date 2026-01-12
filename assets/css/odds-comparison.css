@@ -392,40 +392,141 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    gap: 0.5rem;
 }
 
 .oc-team {
     text-align: center;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.oc-team-logo img {
+.oc-team-home {
+    align-items: flex-start;
+}
+
+.oc-team-away {
+    align-items: flex-end;
+}
+
+.oc-team-logo {
     width: 48px;
     height: 48px;
     object-fit: contain;
+    border-radius: var(--oc-radius);
+    background: var(--oc-bg-alt);
+    padding: 4px;
 }
 
 .oc-team-name {
     display: block;
     font-weight: 600;
     font-size: 0.875rem;
-    margin-top: 0.25rem;
+    margin-top: 0.5rem;
+    text-align: center;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .oc-match-vs {
     text-align: center;
-    padding: 0 0.5rem;
+    padding: 0 0.25rem;
+    flex-shrink: 0;
 }
 
-.oc-match-vs .vs {
+.oc-match-vs .oc-vs {
     font-weight: 700;
-    color: var(--primary);
+    color: var(--oc-primary);
+    font-size: 0.75rem;
 }
 
-.oc-match-vs .oc-match-date,
-.oc-match-vs .oc-match-time {
+.oc-match-datetime {
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--oc-text-light);
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+}
+
+.oc-odds-summary {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.oc-odds-summary .oc-odds-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.625rem 0.5rem;
+    background: var(--oc-bg-alt);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.oc-odds-summary .oc-odds-btn:hover {
+    background: var(--oc-primary);
+    border-color: var(--oc-primary);
+    color: #fff;
+}
+
+.oc-odds-summary .oc-odds-btn span {
     font-size: 0.75rem;
     color: var(--oc-text-light);
+    margin-bottom: 0.25rem;
+}
+
+.oc-odds-summary .oc-odds-btn:hover span {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.oc-odds-summary .oc-odds-btn strong {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--oc-text);
+}
+
+.oc-odds-summary .oc-odds-btn:hover strong {
+    color: #fff;
+}
+
+.oc-match-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-match-footer span {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+.oc-view-btn {
+    padding: 0.5rem 1rem;
+    background: var(--oc-bg-alt);
+    color: var(--oc-text);
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.oc-view-btn:hover {
+    background: var(--oc-border);
+    color: var(--oc-text);
 }
 
 .oc-match-odds-summary {
@@ -834,6 +935,101 @@
 .oc-filter-group label {
     font-size: 0.875rem;
     font-weight: 500;
+}
+
+/* === Archive with Sidebar Layout === */
+.oc-archive-with-sidebar,
+.oc-operators-archive-with-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.oc-archive-with-sidebar .oc-archive-main,
+.oc-operators-archive-with-sidebar .oc-operators-archive-main {
+    flex: 1;
+}
+
+.oc-archive-with-sidebar .oc-archive-sidebar,
+.oc-operators-archive-with-sidebar .oc-archive-sidebar {
+    width: 100%;
+}
+
+.oc-archive-sidebar {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+    padding: 1.5rem;
+}
+
+.oc-archive-sidebar .widget {
+    margin-bottom: 1.5rem;
+}
+
+.oc-archive-sidebar .widget:last-child {
+    margin-bottom: 0;
+}
+
+.oc-archive-sidebar .widget-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--oc-border);
+}
+
+.oc-archive-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.oc-archive-sidebar ul li {
+    margin-bottom: 0.5rem;
+}
+
+.oc-archive-sidebar ul li a {
+    color: var(--oc-text);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.oc-archive-sidebar ul li a:hover {
+    color: var(--oc-primary);
+}
+
+/* Desktop sidebar layout */
+@media (min-width: 1024px) {
+    .oc-archive-with-sidebar,
+    .oc-operators-archive-with-sidebar {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+    
+    .oc-archive-with-sidebar .oc-archive-main,
+    .oc-operators-archive-with-sidebar .oc-operators-archive-main {
+        flex: 1;
+        min-width: 0;
+    }
+    
+    .oc-archive-with-sidebar .oc-archive-sidebar,
+    .oc-operators-archive-with-sidebar .oc-archive-sidebar {
+        width: 300px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 2rem;
+    }
+}
+
+/* Mobile sidebar layout */
+@media (max-width: 768px) {
+    .oc-archive-with-sidebar,
+    .oc-operators-archive-with-sidebar {
+        margin: 1rem 0;
+    }
+    
+    .oc-archive-sidebar {
+        order: -1;
+    }
 }
 
 /* === Shortcode Styles === */
@@ -2056,15 +2252,1308 @@
     .oc-comparison-card {
         padding: 1.25rem;
     }
-    
+
     .oc-bonus-value {
         font-size: 1.125rem;
     }
-    
+
     .oc-card-actions .oc-visit-btn,
     .oc-review-link {
         padding: 0.625rem 0.75rem;
         font-size: 0.8125rem;
     }
+}
+
+/* === Bet Confirmation Styles === */
+.oc-bet-confirmation {
+    font-family: var(--oc-font-family);
+    text-align: center;
+    padding: 2rem 1.5rem;
+}
+
+.oc-confirmation-icon {
+    margin-bottom: 1rem;
+}
+
+.oc-confirmation-icon svg {
+    width: 64px;
+    height: 64px;
+}
+
+.oc-bet-confirmation h3 {
+    margin: 0 0 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--oc-success);
+}
+
+.oc-confirmation-details {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    padding: 1.25rem;
+    text-align: left;
+}
+
+.oc-confirmation-details p {
+    margin: 0 0 0.75rem;
+    font-size: 0.9375rem;
+    color: var(--oc-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--oc-border);
+}
+
+.oc-confirmation-details p:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.oc-confirmation-details strong {
+    font-weight: 600;
+    color: var(--oc-text-light);
+}
+
+.oc-confirmation-details span:last-child {
+    font-weight: 600;
+    color: var(--oc-text);
+}
+
+/* Confirmation with potential win highlight */
+.oc-confirmation-details .potential-win {
+    background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+    padding: 0.75rem;
+    border-radius: var(--oc-radius);
+    margin-top: 1rem;
+    border: 1px solid var(--oc-success);
+}
+
+.oc-confirmation-details .potential-win span:last-child {
+    color: var(--oc-success);
+    font-size: 1.125rem;
+}
+
+/* Responsive confirmation styles */
+@media (max-width: 480px) {
+    .oc-bet-confirmation {
+        padding: 1.5rem 1rem;
+    }
+
+    .oc-confirmation-icon svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .oc-bet-confirmation h3 {
+        font-size: 1.25rem;
+    }
+
+    .oc-confirmation-details {
+        padding: 1rem;
+    }
+
+    .oc-confirmation-details p {
+        font-size: 0.875rem;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.25rem;
+    }
+
+    .oc-confirmation-details span:last-child {
+        align-self: flex-end;
+    }
+}
+
+/* ============================================
+   COUPON POPUP MODAL STYLES
+   ============================================ */
+
+/* Overlay */
+.oc-coupon-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    backdrop-filter: blur(4px);
+    animation: oc-fadeIn 0.2s ease;
+}
+
+@keyframes oc-fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Popup Container */
+.oc-coupon-popup {
+    background: #fff;
+    border-radius: var(--oc-radius-lg);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    animation: oc-slideUp 0.3s ease;
+}
+
+@keyframes oc-slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.oc-coupon-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--oc-border);
+    background: var(--oc-bg-alt);
+}
+
+.oc-coupon-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--oc-text);
+}
+
+.oc-coupon-close {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--oc-text-light);
+    border-radius: var(--oc-radius);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.oc-coupon-close:hover {
+    background: var(--oc-border);
+    color: var(--oc-text);
+}
+
+/* Content Area */
+.oc-coupon-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Empty State */
+.oc-coupon-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: var(--oc-text-light);
+}
+
+.oc-coupon-empty svg {
+    margin-bottom: 1rem;
+    color: var(--oc-border);
+}
+
+.oc-coupon-empty p {
+    margin: 0 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 500;
+}
+
+.oc-coupon-empty .oc-empty-hint {
+    font-size: 0.875rem;
+    font-weight: normal;
+}
+
+/* Bet Items */
+.oc-coupon-bets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.oc-coupon-bet-item {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.oc-bet-match-info {
+    flex: 1;
+}
+
+.oc-bet-match-name {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    margin-bottom: 0.25rem;
+    color: var(--oc-text);
+}
+
+.oc-bet-selection {
+    font-size: 0.8125rem;
+    color: var(--oc-text-light);
+}
+
+.oc-bet-selection strong {
+    color: var(--oc-primary);
+}
+
+.oc-bet-odds {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--oc-primary);
+}
+
+.oc-bet-remove {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: var(--oc-text-light);
+    transition: color 0.2s;
+}
+
+.oc-bet-remove:hover {
+    color: var(--oc-danger);
+}
+
+/* Bookmaker Section */
+.oc-coupon-bookmakers {
+    padding: 1rem 1.5rem 1.25rem;
+    border-top: 1px solid var(--oc-border);
+    background: var(--oc-bg-alt);
+}
+
+.oc-coupon-bookmakers h4 {
+    margin: 0 0 0.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--oc-text);
+}
+
+.oc-bookmaker-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.oc-bookmaker-option-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #fff;
+    border: 2px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.oc-bookmaker-option-card:hover {
+    border-color: var(--oc-primary);
+}
+
+.oc-bookmaker-option-card.selected {
+    border-color: var(--oc-primary);
+    background: #eff6ff;
+}
+
+.oc-bookmaker-option-card .oc-bookmaker-logo img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.oc-bookmaker-option-card .oc-logo-fallback {
+    width: 36px;
+    height: 36px;
+    font-size: 0.875rem;
+}
+
+.oc-bookmaker-option-card .oc-bookmaker-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.oc-bookmaker-option-card .oc-bookmaker-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--oc-text);
+}
+
+.oc-bookmaker-option-card .oc-bookmaker-rating,
+.oc-bookmaker-option-card .oc-bookmaker-bonus {
+    font-size: 0.75rem;
+    color: var(--oc-text-light);
+}
+
+.oc-bookmaker-option-card .oc-bookmaker-rating {
+    color: var(--oc-warning);
+}
+
+/* Stake Section */
+.oc-coupon-stake-section {
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-stake-input-group {
+    margin-bottom: 1rem;
+}
+
+.oc-stake-input-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--oc-text);
+    margin-bottom: 0.5rem;
+}
+
+.oc-stake-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-align: center;
+    transition: border-color 0.2s;
+}
+
+.oc-stake-input:focus {
+    outline: none;
+    border-color: var(--oc-primary);
+}
+
+.oc-stake-presets {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.oc-stake-preset {
+    flex: 1;
+    padding: 0.5rem;
+    background: var(--oc-bg-alt);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--oc-text);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.oc-stake-preset:hover {
+    background: var(--oc-border);
+    border-color: var(--oc-text-light);
+}
+
+.oc-stake-preset.active {
+    background: var(--oc-primary);
+    border-color: var(--oc-primary);
+    color: #fff;
+}
+
+/* Summary */
+.oc-coupon-summary {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+}
+
+.oc-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+}
+
+.oc-summary-row:not(:last-child) {
+    border-bottom: 1px solid var(--oc-border);
+}
+
+.oc-summary-label {
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-summary-value {
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--oc-text);
+}
+
+.oc-summary-row.oc-summary-win {
+    margin-top: 0.5rem;
+    padding-top: 0.75rem;
+    border-bottom: none;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-summary-row.oc-summary-win .oc-summary-value {
+    font-size: 1.25rem;
+    color: var(--oc-success);
+}
+
+/* Balance */
+.oc-coupon-balance {
+    padding: 1rem 1.5rem;
+    background: var(--oc-bg-alt);
+    border-top: 1px solid var(--oc-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.oc-balance-label {
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+}
+
+.oc-balance-value {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--oc-success);
+}
+
+.oc-balance-notice {
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+    font-style: italic;
+}
+
+/* Actions */
+.oc-coupon-actions {
+    padding: 1rem 1.5rem 1.5rem;
+    display: flex;
+    gap: 0.75rem;
+    border-top: 1px solid var(--oc-border);
+}
+
+.oc-clear-all-btn {
+    flex: 0 0 auto;
+    padding: 0.75rem 1rem;
+    background: var(--oc-bg-alt);
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--oc-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.oc-clear-all-btn:hover {
+    background: var(--oc-border);
+    border-color: var(--oc-text-light);
+}
+
+.oc-place-bet-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    background: var(--oc-primary);
+    border: none;
+    border-radius: var(--oc-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.oc-place-bet-btn:hover:not(:disabled) {
+    background: var(--oc-primary-dark);
+}
+
+.oc-place-bet-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Success State */
+.oc-coupon-success {
+    text-align: center;
+    padding: 2rem;
+}
+
+.oc-coupon-success .oc-success-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem;
+    background: #dcfce7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.oc-coupon-success .oc-success-icon svg {
+    width: 32px;
+    height: 32px;
+    color: var(--oc-success);
+}
+
+.oc-coupon-success h3 {
+    font-size: 1.5rem;
+    margin: 0 0 1rem;
+    color: var(--oc-success);
+}
+
+.oc-coupon-success .oc-success-details {
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius);
+    padding: 1rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.oc-coupon-success .oc-success-details p {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 0.5rem;
+    font-size: 0.9375rem;
+}
+
+.oc-coupon-success .oc-success-details p:last-child {
+    margin-bottom: 0;
+}
+
+.oc-coupon-success .oc-success-details strong {
+    color: var(--oc-text-light);
+    font-weight: 500;
+}
+
+.oc-coupon-success .oc-new-balance {
+    font-size: 0.875rem;
+    color: var(--oc-text-light);
+    margin-bottom: 1.5rem;
+}
+
+.oc-coupon-success .oc-new-balance span {
+    font-weight: 700;
+    color: var(--oc-success);
+}
+
+.oc-coupon-success .oc-continue-btn {
+    padding: 0.75rem 2rem;
+    background: var(--oc-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--oc-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.oc-coupon-success .oc-continue-btn:hover {
+    background: var(--oc-primary-dark);
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+    .oc-coupon-popup {
+        max-height: 100vh;
+        max-width: 100%;
+        border-radius: 0;
+        height: 100vh;
+    }
+
+    .oc-coupon-header {
+        padding: 1rem 1.25rem;
+    }
+
+    .oc-coupon-content {
+        padding: 1.25rem;
+        flex: 1;
+        overflow-y: auto;
+    }
+
+    .oc-coupon-bookmakers {
+        padding: 1rem 1.25rem 1.25rem;
+    }
+
+    .oc-coupon-stake-section {
+        padding: 1.25rem;
+    }
+
+    .oc-stake-presets {
+        flex-wrap: wrap;
+    }
+
+    .oc-stake-preset {
+        flex: 1 1 calc(33.333% - 0.35rem);
+    }
+
+    .oc-coupon-balance {
+        padding: 1rem 1.25rem;
+    }
+
+    .oc-coupon-actions {
+        padding: 1rem 1.25rem 1.25rem;
+        flex-direction: column;
+    }
+
+    .oc-clear-all-btn {
+        order: 2;
+    }
+
+    .oc-place-bet-btn {
+        order: 1;
+    }
+}
+
+/* ============================================
+   COUPON BADGE (Fixed Position)
+   ============================================ */
+.oc-coupon-badge {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 56px;
+    height: 56px;
+    background: var(--oc-primary);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+    z-index: 9998;
+    transition: all 0.3s ease;
+}
+
+.oc-coupon-badge:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.5);
+}
+
+.oc-coupon-badge svg {
+    width: 28px;
+    height: 28px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+.oc-coupon-badge .oc-badge-count {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 22px;
+    height: 22px;
+    background: var(--oc-danger);
+    border-radius: 11px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
+    border: 2px solid #fff;
+}
+
+.oc-coupon-badge.has-bets {
+    animation: oc-pulse 2s infinite;
+}
+
+@keyframes oc-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(37, 99, 235, 0);
+    }
+}
+
+@media (max-width: 768px) {
+    .oc-coupon-badge {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 52px;
+        height: 52px;
+    }
+
+    .oc-coupon-badge svg {
+        width: 24px;
+        height: 24px;
+    }
+}
+
+/* ============================================
+   LOADING SPINNER FOR PLACE BET BUTTON
+   ============================================ */
+.oc-place-bet-btn.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.oc-place-bet-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: oc-btn-spinner 0.8s linear infinite;
+}
+
+@keyframes oc-btn-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error state for place bet button */
+.oc-place-bet-btn.error {
+    animation: oc-shake 0.5s ease;
+    background: var(--oc-danger);
+}
+
+@keyframes oc-shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+/* Stake input validation styles */
+.oc-stake-input.error {
+    border-color: var(--oc-danger);
+    animation: oc-shake 0.5s ease;
+}
+
+.oc-stake-input.valid {
+    border-color: var(--oc-success);
+}
+
+/* Low balance warning */
+.oc-balance-warning {
+    color: var(--oc-danger) !important;
+}
+
+/* Stake input container validation states */
+.oc-stake-field.has-error .oc-stake-input {
+    border-color: var(--oc-danger);
+}
+
+.oc-stake-field.has-success .oc-stake-input {
+    border-color: var(--oc-success);
+}
+
+.oc-stake-input-wrapper.has-error .oc-stake-input {
+    border-color: var(--oc-danger);
+}
+
+.oc-stake-input-wrapper.has-success .oc-stake-input {
+    border-color: var(--oc-success);
+}
+
+/* ============================================
+   BLOG SECTION STYLES
+   ============================================ */
+
+/* Blog Section Container */
+.oc-blog-section {
+    padding: 3rem 0;
+    margin-top: 2rem;
+}
+
+.oc-blog-section .oc-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.oc-blog-section .oc-section-header h2 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--oc-text);
+}
+
+.oc-view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--oc-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9375rem;
+    transition: color 0.2s;
+}
+
+.oc-view-all-link:hover {
+    color: var(--oc-primary-dark);
+}
+
+.oc-view-all-link svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    transition: transform 0.2s;
+}
+
+.oc-view-all-link:hover svg {
+    transform: translateX(4px);
+}
+
+/* Blog Grid Layout */
+.oc-blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Blog Card */
+.oc-blog-card {
+    background: #fff;
+    border: 1px solid var(--oc-border);
+    border-radius: var(--oc-radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.oc-blog-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Blog Card Image */
+.oc-blog-card-image {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+    background: var(--oc-bg-alt);
+}
+
+.oc-blog-card-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.oc-blog-card:hover .oc-blog-card-image img {
+    transform: scale(1.05);
+}
+
+.oc-blog-card-image .oc-image-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--oc-bg-alt) 0%, #e2e8f0 100%);
+}
+
+.oc-blog-card-image .oc-image-placeholder svg {
+    width: 48px;
+    height: 48px;
+    stroke: var(--oc-text-light);
+    stroke-width: 1.5;
+    fill: none;
+    opacity: 0.5;
+}
+
+/* Blog Card Category Badge */
+.oc-blog-category-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    background: var(--oc-primary);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+    z-index: 2;
+}
+
+.oc-blog-category-badge:hover {
+    background: var(--oc-primary-dark);
+    color: #fff;
+    text-decoration: none;
+}
+
+/* Blog Card Content */
+.oc-blog-card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+/* Blog Card Meta */
+.oc-blog-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--oc-text-light);
+}
+
+.oc-blog-card-meta .oc-post-date {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.oc-blog-card-meta .oc-post-date svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+.oc-blog-card-meta .oc-post-author {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.oc-blog-card-meta .oc-post-author img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.oc-blog-card-meta .oc-post-author .oc-author-name {
+    color: var(--oc-text);
+    font-weight: 500;
+}
+
+/* Blog Card Title */
+.oc-blog-card-title {
+    margin: 0 0 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.oc-blog-card-title a {
+    color: var(--oc-text);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.oc-blog-card-title a:hover {
+    color: var(--oc-primary);
+}
+
+/* Blog Card Excerpt */
+.oc-blog-card-excerpt {
+    margin: 0 0 1rem;
+    font-size: 0.9375rem;
+    color: var(--oc-text-light);
+    line-height: 1.6;
+    flex: 1;
+}
+
+/* Blog Card Footer */
+.oc-blog-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--oc-border);
+    margin-top: auto;
+}
+
+.oc-blog-card-footer .oc-read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--oc-primary);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.oc-blog-card-footer .oc-read-more:hover {
+    color: var(--oc-primary-dark);
+}
+
+.oc-blog-card-footer .oc-read-more svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    transition: transform 0.2s;
+}
+
+.oc-blog-card-footer .oc-read-more:hover svg {
+    transform: translateX(4px);
+}
+
+.oc-blog-card-footer .oc-comment-count {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.8125rem;
+    color: var(--oc-text-light);
+}
+
+.oc-blog-card-footer .oc-comment-count svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* No Posts Message */
+.oc-blog-no-posts {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--oc-bg-alt);
+    border-radius: var(--oc-radius-lg);
+}
+
+.oc-blog-no-posts svg {
+    width: 64px;
+    height: 64px;
+    stroke: var(--oc-text-light);
+    stroke-width: 1.5;
+    fill: none;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.oc-blog-no-posts h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
+    color: var(--oc-text);
+}
+
+.oc-blog-no-posts p {
+    margin: 0;
+    color: var(--oc-text-light);
+}
+
+/* View All Section */
+.oc-blog-view-all-section {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.oc-blog-view-all-section .oc-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: var(--oc-primary);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: var(--oc-radius);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.oc-blog-view-all-section .oc-btn:hover {
+    background: var(--oc-primary-dark);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.oc-blog-view-all-section .oc-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* Blog Section Title */
+.oc-blog-section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--oc-text);
+    margin: 0 0 0.5rem;
+}
+
+.oc-blog-section-subtitle {
+    font-size: 1rem;
+    color: var(--oc-text-light);
+    margin: 0 0 2rem;
+    max-width: 600px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .oc-blog-section {
+        padding: 2rem 0;
+    }
+
+    .oc-blog-section .oc-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .oc-blog-section .oc-section-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .oc-blog-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+
+    .oc-blog-card-content {
+        padding: 1.25rem;
+    }
+
+    .oc-blog-card-title {
+        font-size: 1.0625rem;
+    }
+
+    .oc-blog-card-excerpt {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .oc-blog-section {
+        padding: 1.5rem 0;
+    }
+
+    .oc-blog-card-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .oc-blog-card-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .oc-blog-card-footer .oc-comment-count {
+        order: -1;
+    }
+}
+
+/* Staggered Animation for Cards */
+.oc-blog-grid .oc-blog-card {
+    opacity: 0;
+    animation: oc-fadeInUp 0.5s ease forwards;
+}
+
+.oc-blog-grid .oc-blog-card:nth-child(1) { animation-delay: 0.1s; }
+.oc-blog-grid .oc-blog-card:nth-child(2) { animation-delay: 0.2s; }
+.oc-blog-grid .oc-blog-card:nth-child(3) { animation-delay: 0.3s; }
+.oc-blog-grid .oc-blog-card:nth-child(4) { animation-delay: 0.4s; }
+.oc-blog-grid .oc-blog-card:nth-child(5) { animation-delay: 0.5s; }
+.oc-blog-grid .oc-blog-card:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes oc-fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Skeleton Loading State */
+.oc-blog-card.skeleton {
+    pointer-events: none;
+}
+
+.oc-blog-card.skeleton .oc-blog-card-image {
+    background: linear-gradient(90deg, var(--oc-bg-alt) 25%, #e2e8f0 50%, var(--oc-bg-alt) 75%);
+    background-size: 200% 100%;
+    animation: oc-skeleton-loading 1.5s infinite;
+}
+
+.oc-blog-card.skeleton .oc-blog-card-meta span,
+.oc-blog-card.skeleton .oc-blog-card-title,
+.oc-blog-card.skeleton .oc-blog-card-excerpt {
+    background: linear-gradient(90deg, var(--oc-bg-alt) 25%, #e2e8f0 50%, var(--oc-bg-alt) 75%);
+    background-size: 200% 100%;
+    animation: oc-skeleton-loading 1.5s infinite;
+    border-radius: 4px;
+    color: transparent;
+}
+
+.oc-blog-card.skeleton .oc-blog-card-title {
+    height: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.oc-blog-card.skeleton .oc-blog-card-excerpt {
+    height: 3rem;
+}
+
+.oc-blog-card.skeleton .oc-blog-card-meta span {
+    width: 80px;
+    height: 0.875rem;
+}
+
+@keyframes oc-skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 

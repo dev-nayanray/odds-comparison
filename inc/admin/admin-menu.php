@@ -77,6 +77,16 @@ function oc_add_admin_menu() {
         'oc_settings_page'
     );
     
+    // Betting submenu
+    add_submenu_page(
+        'odds-comparison',
+        __( 'Betting Management', 'odds-comparison' ),
+        __( 'Betting Management', 'odds-comparison' ),
+        'manage_options',
+        'oc-betting-management',
+        'oc_betting_management_page'
+    );
+
     // Import/Export submenu
     add_submenu_page(
         'odds-comparison',
@@ -420,6 +430,324 @@ function oc_manage_odds_page() {
             </div>
         </div>
     </div>
+    <?php
+}
+
+/**
+ * Betting management page callback
+ *
+ * @since 1.0.0
+ */
+function oc_betting_management_page() {
+    global $wpdb;
+
+    // Handle form submissions for adjusting user balance
+    if ( isset( $_POST['oc_adjust_balance'] ) && wp_verify_nonce( $_POST['oc_nonce'], 'oc_adjust_balance' ) ) {
+        $user_id = absint( $_POST['user_id'] );
+        $amount = floatval( $_POST['amount'] );
+        $description = sanitize_text_field( $_POST['description'] );
+
+        // Get current balance
+        $current_balance = oc_get_user_balance( $user_id );
+
+        // Calculate new balance
+        $new_balance = $current_balance + $amount;
+
+        // Update balance
+        $wpdb->replace(
+            $wpdb->prefix . 'oc_user_balance',
+            array(
+                'user_id' => $user_id,
+                'balance' => $new_balance,
+            ),
+            array( '%d', '%f' )
+        );
+
+        // Log transaction
+        $wpdb->insert(
+            $wpdb->prefix . 'oc_betting_transactions',
+            array(
+                'user_id'         => $user_id,
+                'transaction_type' => $amount > 0 ? 'deposit' : 'withdrawal',
+                'amount'          => abs( $amount ),
+                'balance_after'   => $new_balance,
+                'description'     => $description,
+            ),
+            array( '%d', '%s', '%f', '%f', '%s' )
+        );
+
+        echo '<div class="notice notice-success"><p>' . esc_html__( 'Balance adjusted successfully.', 'odds-comparison' ) . '</p></div>';
+    }
+
+    // Handle bet settlement
+    if ( isset( $_POST['oc_settle_bet'] ) && wp_verify_nonce( $_POST['oc_nonce'], 'oc_settle_bet' ) ) {
+        $bet_id = absint( $_POST['bet_id'] );
+        $result = sanitize_text_field( $_POST['result'] );
+
+        $bet = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}oc_user_bets WHERE id = %d", $bet_id ) );
+
+        if ( $bet && $bet->status === 'pending' ) {
+            $payout = 0;
+            $new_status = 'lost';
+
+            if ( $result === 'won' ) {
+                $payout = $bet->stake * $bet->odds;
+                $new_status = 'won';
+            }
+
+            // Update bet
+            $wpdb->update(
+                $wpdb->prefix . 'oc_user_bets',
+                array(
+                    'status'     => $new_status,
+                    'result'     => $result,
+                    'payout'     => $payout,
+                    'settled_at' => current_time( 'mysql' ),
+                ),
+                array( 'id' => $bet_id ),
+                array( '%s', '%s', '%f', '%s' ),
+                array( '%d' )
+            );
+
+            // Update user balance if won
+            if ( $result === 'won' ) {
+                $current_balance = oc_get_user_balance( $bet->user_id );
+                $new_balance = $current_balance + $payout;
+
+                $wpdb->replace(
+                    $wpdb->prefix . 'oc_user_balance',
+                    array(
+                        'user_id' => $bet->user_id,
+                        'balance' => $new_balance,
+                    ),
+                    array( '%d', '%f' )
+                );
+
+                // Log transaction
+                $wpdb->insert(
+                    $wpdb->prefix . 'oc_betting_transactions',
+                    array(
+                        'user_id'         => $bet->user_id,
+                        'transaction_type' => 'bet_win',
+                        'amount'          => $payout,
+                        'balance_after'   => $new_balance,
+                        'description'     => sprintf( __( 'Bet win for match ID %d', 'odds-comparison' ), $bet->match_id ),
+                    ),
+                    array( '%d', '%s', '%f', '%f', '%s' )
+                );
+            }
+
+            echo '<div class="notice notice-success"><p>' . esc_html__( 'Bet settled successfully.', 'odds-comparison' ) . '</p></div>';
+        }
+    }
+
+    // Get betting stats
+    $total_users = $wpdb->get_var( "SELECT COUNT(DISTINCT user_id) FROM {$wpdb->prefix}oc_user_balance" );
+    $total_bets = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}oc_user_bets" );
+    $pending_bets = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}oc_user_bets WHERE status = 'pending'" );
+    $total_balance = $wpdb->get_var( "SELECT SUM(balance) FROM {$wpdb->prefix}oc_user_balance" );
+
+    // Get recent bets
+    $recent_bets = $wpdb->get_results(
+        "SELECT b.*, u.display_name as user_name, m.post_title as match_name
+         FROM {$wpdb->prefix}oc_user_bets b
+         INNER JOIN {$wpdb->users} u ON b.user_id = u.ID
+         LEFT JOIN {$wpdb->posts} m ON b.match_id = m.ID
+         ORDER BY b.placed_at DESC
+         LIMIT 20",
+        ARRAY_A
+    );
+
+    // Get recent transactions
+    $recent_transactions = $wpdb->get_results(
+        "SELECT t.*, u.display_name as user_name
+         FROM {$wpdb->prefix}oc_betting_transactions t
+         INNER JOIN {$wpdb->users} u ON t.user_id = u.ID
+         ORDER BY t.created_at DESC
+         LIMIT 20",
+        ARRAY_A
+    );
+
+    // Get users for balance adjustment
+    $users = get_users( array( 'number' => 100 ) );
+
+    ?>
+    <div class="wrap oc-admin-wrap">
+        <h1><?php esc_html_e( 'Betting Management', 'odds-comparison' ); ?></h1>
+
+        <div class="oc-admin-dashboard">
+            <div class="oc-stats-grid">
+                <div class="oc-stat-card">
+                    <span class="stat-number"><?php echo esc_html( $total_users ?? 0 ); ?></span>
+                    <span class="stat-label"><?php esc_html_e( 'Active Users', 'odds-comparison' ); ?></span>
+                </div>
+                <div class="oc-stat-card">
+                    <span class="stat-number"><?php echo esc_html( $total_bets ?? 0 ); ?></span>
+                    <span class="stat-label"><?php esc_html_e( 'Total Bets', 'odds-comparison' ); ?></span>
+                </div>
+                <div class="oc-stat-card">
+                    <span class="stat-number"><?php echo esc_html( $pending_bets ?? 0 ); ?></span>
+                    <span class="stat-label"><?php esc_html_e( 'Pending Bets', 'odds-comparison' ); ?></span>
+                </div>
+                <div class="oc-stat-card">
+                    <span class="stat-number"><?php echo esc_html( number_format( $total_balance ?? 0, 2 ) ); ?> €</span>
+                    <span class="stat-label"><?php esc_html_e( 'Total Balance', 'odds-comparison' ); ?></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="oc-betting-management-grid">
+            <div class="oc-balance-adjustment">
+                <h2><?php esc_html_e( 'Adjust User Balance', 'odds-comparison' ); ?></h2>
+
+                <form method="post">
+                    <?php wp_nonce_field( 'oc_adjust_balance', 'oc_nonce' ); ?>
+
+                    <table class="form-table">
+                        <tr>
+                            <th scope="row">
+                                <label for="user_id"><?php esc_html_e( 'User', 'odds-comparison' ); ?></label>
+                            </th>
+                            <td>
+                                <select name="user_id" id="user_id" required>
+                                    <option value=""><?php esc_html_e( 'Select User', 'odds-comparison' ); ?></option>
+                                    <?php foreach ( $users as $user ) : ?>
+                                        <option value="<?php echo esc_attr( $user->ID ); ?>">
+                                            <?php echo esc_html( $user->display_name . ' (' . $user->user_email . ')' ); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="amount"><?php esc_html_e( 'Amount', 'odds-comparison' ); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" name="amount" id="amount" step="0.01" required>
+                                <p class="description"><?php esc_html_e( 'Positive for deposit, negative for withdrawal.', 'odds-comparison' ); ?></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <label for="description"><?php esc_html_e( 'Description', 'odds-comparison' ); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="description" id="description" required>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <?php submit_button( __( 'Adjust Balance', 'odds-comparison' ), 'primary', 'oc_adjust_balance' ); ?>
+                </form>
+            </div>
+
+            <div class="oc-recent-bets">
+                <h2><?php esc_html_e( 'Recent Bets', 'odds-comparison' ); ?></h2>
+
+                <?php if ( empty( $recent_bets ) ) : ?>
+                    <p><?php esc_html_e( 'No bets found.', 'odds-comparison' ); ?></p>
+                <?php else : ?>
+                    <table class="widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'User', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Match', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Bet Type', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Stake', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Odds', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Status', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Placed', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Actions', 'odds-comparison' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ( $recent_bets as $bet ) : ?>
+                                <tr>
+                                    <td><?php echo esc_html( $bet['user_name'] ); ?></td>
+                                    <td><?php echo esc_html( $bet['match_name'] ?: 'N/A' ); ?></td>
+                                    <td><?php echo esc_html( ucfirst( $bet['bet_type'] ) ); ?></td>
+                                    <td><?php echo esc_html( number_format( $bet['stake'], 2 ) ); ?> €</td>
+                                    <td><?php echo esc_html( number_format( $bet['odds'], 2 ) ); ?></td>
+                                    <td>
+                                        <span class="status-<?php echo esc_attr( $bet['status'] ); ?>">
+                                            <?php echo esc_html( ucfirst( $bet['status'] ) ); ?>
+                                        </span>
+                                    </td>
+                                    <td><?php echo esc_html( date_i18n( 'd.m.Y H:i', strtotime( $bet['placed_at'] ) ) ); ?></td>
+                                    <td>
+                                        <?php if ( $bet['status'] === 'pending' ) : ?>
+                                            <form method="post" style="display: inline;">
+                                                <?php wp_nonce_field( 'oc_settle_bet', 'oc_nonce' ); ?>
+                                                <input type="hidden" name="bet_id" value="<?php echo esc_attr( $bet['id'] ); ?>">
+                                                <select name="result" style="margin-right: 5px;">
+                                                    <option value="won"><?php esc_html_e( 'Won', 'odds-comparison' ); ?></option>
+                                                    <option value="lost"><?php esc_html_e( 'Lost', 'odds-comparison' ); ?></option>
+                                                </select>
+                                                <?php submit_button( __( 'Settle', 'odds-comparison' ), 'small', 'oc_settle_bet', false ); ?>
+                                            </form>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+
+            <div class="oc-recent-transactions">
+                <h2><?php esc_html_e( 'Recent Transactions', 'odds-comparison' ); ?></h2>
+
+                <?php if ( empty( $recent_transactions ) ) : ?>
+                    <p><?php esc_html_e( 'No transactions found.', 'odds-comparison' ); ?></p>
+                <?php else : ?>
+                    <table class="widefat fixed striped">
+                        <thead>
+                            <tr>
+                                <th><?php esc_html_e( 'User', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Type', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Amount', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Balance After', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Description', 'odds-comparison' ); ?></th>
+                                <th><?php esc_html_e( 'Date', 'odds-comparison' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ( $recent_transactions as $transaction ) : ?>
+                                <tr>
+                                    <td><?php echo esc_html( $transaction['user_name'] ); ?></td>
+                                    <td><?php echo esc_html( ucfirst( str_replace( '_', ' ', $transaction['transaction_type'] ) ) ); ?></td>
+                                    <td><?php echo esc_html( number_format( $transaction['amount'], 2 ) ); ?> €</td>
+                                    <td><?php echo esc_html( number_format( $transaction['balance_after'], 2 ) ); ?> €</td>
+                                    <td><?php echo esc_html( $transaction['description'] ); ?></td>
+                                    <td><?php echo esc_html( date_i18n( 'd.m.Y H:i', strtotime( $transaction['created_at'] ) ) ); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .oc-betting-management-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .oc-balance-adjustment,
+        .oc-recent-bets,
+        .oc-recent-transactions {
+            background: #fff;
+            border: 1px solid #ccd0d4;
+            border-radius: 4px;
+            padding: 20px;
+        }
+        .status-pending { color: #ffba00; }
+        .status-won { color: #46b450; }
+        .status-lost { color: #dc3232; }
+    </style>
     <?php
 }
 

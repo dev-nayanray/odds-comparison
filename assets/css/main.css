@@ -336,3 +336,288 @@
         padding: 0;
     }
 }
+
+/* Premier League Section Styles */
+.oc-premier-league-section {
+    padding: 40px 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    margin: 30px 0;
+}
+
+.oc-premier-league-section .oc-section-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.oc-premier-league-section .oc-premier-league-badge {
+    font-size: 32px;
+}
+
+.oc-pl-matches {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.oc-pl-date-group {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.oc-pl-date-header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.oc-pl-day-name {
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.oc-pl-date {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.oc-pl-matches-list {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.oc-pl-match-card {
+    display: grid;
+    grid-template-columns: 80px 1fr 180px 100px;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.oc-pl-match-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    transform: translateX(5px);
+}
+
+.oc-pl-match-time {
+    text-align: center;
+}
+
+.oc-pl-match-time .time {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.oc-pl-match-time .time.TBD {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+}
+
+.oc-pl-match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.oc-pl-team {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 120px;
+}
+
+.oc-pl-team.oc-pl-home {
+    justify-content: flex-end;
+}
+
+.oc-pl-team.oc-pl-away {
+    justify-content: flex-start;
+}
+
+.oc-pl-team-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.oc-pl-team-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.oc-pl-vs {
+    min-width: 30px;
+    text-align: center;
+}
+
+.oc-pl-vs .vs-text {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 500;
+}
+
+.oc-pl-match-odds {
+    display: flex;
+    gap: 8px;
+}
+
+.oc-pl-odd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    min-width: 50px;
+}
+
+.oc-pl-odd:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.oc-pl-odd-home {
+    border-bottom: 3px solid #27ae60;
+}
+
+.oc-pl-odd-draw {
+    border-bottom: 3px solid #f39c12;
+}
+
+.oc-pl-odd-away {
+    border-bottom: 3px solid #3498db;
+}
+
+.oc-pl-odd .odd-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.oc-pl-odd .odd-label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 2px;
+}
+
+.oc-pl-match-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background: transparent;
+    color: #fff;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.oc-pl-match-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+}
+
+/* Responsive Styles for Premier League Section */
+@media (max-width: 992px) {
+    .oc-pl-match-card {
+        grid-template-columns: 70px 1fr 140px;
+        gap: 15px;
+    }
+
+    .oc-pl-match-link {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .oc-premier-league-section {
+        padding: 30px 0;
+    }
+
+    .oc-premier-league-section .oc-section-title {
+        font-size: 22px;
+    }
+
+    .oc-pl-date-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .oc-pl-match-card {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 20px;
+    }
+
+    .oc-pl-match-time {
+        order: 1;
+    }
+
+    .oc-pl-match-teams {
+        order: 2;
+    }
+
+    .oc-pl-match-odds {
+        order: 3;
+        justify-content: center;
+    }
+
+    .oc-pl-match-link {
+        order: 4;
+        display: block;
+    }
+
+    .oc-pl-team {
+        min-width: auto;
+    }
+
+    .oc-pl-team-name {
+        max-width: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .oc-pl-match-odds {
+        flex-wrap: wrap;
+    }
+
+    .oc-pl-odd {
+        flex: 1;
+        min-width: 45px;
+        padding: 6px 8px;
+    }
+
+    .oc-pl-odd .odd-value {
+        font-size: 16px;
+    }
+}

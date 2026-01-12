@@ -35,6 +35,7 @@
             $(document).on('click', '.oc-bulk-update-rating', this.bulkUpdateRating);
             $(document).on('change', '.oc-bonus-type', this.toggleBonusFields);
             $(document).on('click', '.oc-export-operators', this.exportOperators);
+            $(document).on('click', '#oc-add-odds', this.addOdds);
         },
 
         /**
@@ -189,6 +190,72 @@
             // Create download link
             var downloadUrl = ajaxurl + '?action=oc_export_operators&format=' + format + '&nonce=' + oc_admin.nonce;
             window.location.href = downloadUrl;
+        },
+
+        /**
+         * Add odds for a match
+         */
+        addOdds: function(e) {
+            e.preventDefault();
+
+            var button = $(this);
+            var container = button.closest('.oc-odds-meta-box');
+            var matchId = $('#post_ID').val();
+
+            // Get form data
+            var bookmakerId = container.find('#oc-odds-bookmaker').val();
+            var oddsHome = container.find('#oc-odds-home').val();
+            var oddsDraw = container.find('#oc-odds-draw').val();
+            var oddsAway = container.find('#oc-odds-away').val();
+
+            // Validate required fields
+            if (!bookmakerId) {
+                alert('Please select a bookmaker.');
+                return;
+            }
+
+            if (!oddsHome && !oddsDraw && !oddsAway) {
+                alert('Please enter at least one odds value.');
+                return;
+            }
+
+            // Disable button and show loading
+            button.prop('disabled', true).text('Saving...');
+
+            // Send AJAX request
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'oc_save_odds',
+                    match_id: matchId,
+                    bookmaker_id: bookmakerId,
+                    odds_home: oddsHome || '',
+                    odds_draw: oddsDraw || '',
+                    odds_away: oddsAway || '',
+                    nonce: ocAjax.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Odds saved successfully!');
+                        // Clear form
+                        container.find('#oc-odds-bookmaker').val('');
+                        container.find('#oc-odds-home, #oc-odds-draw, #oc-odds-away').val('');
+                        // Refresh the odds list
+                        location.reload();
+                    } else {
+                        alert('Error saving odds: ' + (response.data.message || 'Unknown error'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Error saving odds. Please try again.');
+                    console.error('AJAX Error:', error);
+                },
+                complete: function() {
+                    // Re-enable button
+                    button.prop('disabled', false).text('Add Odds');
+                }
+            });
         },
 
         /**

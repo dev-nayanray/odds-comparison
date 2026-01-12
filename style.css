@@ -5848,3 +5848,190 @@ p {
     }
 }
  
+/* ================================
+   TOP OPERATORS SECTION
+================================ */
+.oc-top-operators {
+    padding: 80px 20px;
+     
+    color: #ffffff;
+    overflow: hidden;
+}
+
+/* Header */
+.oc-top-operators-header {
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 50px;
+}
+
+.oc-top-operators-title {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.oc-top-operators-subtitle {
+    font-size: 16px;
+    color: #000000;
+    line-height: 1.6;
+}
+
+/* ================================
+   GRID SLIDER
+================================ */
+.oc-grid-slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.oc-grid-container {
+    display: flex;
+    gap: 20px;
+    animation: ocScroll 40s linear infinite;
+    width: max-content;
+}
+
+/* Pause animation on hover */
+.oc-grid-slider:hover .oc-grid-container {
+    animation-play-state: paused;
+}
+
+/* ================================
+   GRID ITEM
+================================ */
+.oc-grid-item {
+    background: #2563eb;
+    backdrop-filter: blur(10px);
+    border-radius: 18px;
+    padding: 22px 18px;
+    min-width: 220px;
+    text-align: center;
+    transition: all 0.35s ease;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    position: relative;
+}
+
+.oc-grid-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(0,255,150,0.15), rgba(0,150,255,0.15));
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.oc-grid-item:hover::before {
+    opacity: 1;
+}
+
+.oc-grid-item:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+}
+
+/* Logo */
+.oc-grid-logo {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: #ffffff;
+    padding: 10px;
+    margin-bottom: 12px;
+}
+
+/* Name */
+.oc-grid-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+/* Rating */
+.oc-grid-rating {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.oc-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.oc-stars .star {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 14px;
+}
+
+.oc-stars .star.filled {
+    color: #ffc107;
+}
+
+.oc-grid-rating span {
+    font-weight: 600;
+    color: #e0f2f1;
+}
+
+/* Bonus */
+.oc-grid-bonus {
+    background: linear-gradient(135deg, #00e676, #00c853);
+    color: #003b1f;
+    font-weight: 800;
+    font-size: 14px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    display: inline-block;
+}
+
+/* ================================
+   ANIMATION
+================================ */
+@keyframes ocScroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+    .oc-top-operators {
+        padding: 60px 15px;
+    }
+
+    .oc-top-operators-title {
+        font-size: 28px;
+    }
+
+    .oc-grid-item {
+        min-width: 180px;
+        padding: 18px 14px;
+    }
+
+    .oc-grid-logo {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .oc-top-operators-title {
+        font-size: 24px;
+    }
+
+    .oc-grid-container {
+        gap: 14px;
+    }
+}

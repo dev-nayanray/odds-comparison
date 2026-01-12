@@ -397,17 +397,47 @@ jQuery(document).ready(function($) {
         var type = btn.data('type');
         var bookmaker = btn.data('bookmaker');
         var match = btn.data('match');
-        
-        // Add to coupon (could be implemented here)
-        console.log('Add to coupon:', { odds: odds, type: type, bookmaker: bookmaker, match: match });
-        
-        // Visual feedback
-        btn.addClass('selected');
-        setTimeout(function() {
+
+        // Get match details
+        var matchCard = btn.closest('.oc-match-card');
+        var homeTeam = matchCard.find('.oc-team-home .oc-team-name').text().trim();
+        var awayTeam = matchCard.find('.oc-team-away .oc-team-name').text().trim();
+        var matchName = homeTeam + ' vs ' + awayTeam;
+
+        // Get bookmaker name
+        var bookmakerName = matchCard.find('.oc-bookmaker-cell .oc-bookmaker-name').text().trim();
+
+        // Toggle selection
+        if (btn.hasClass('selected')) {
+            // Remove from coupon
+            if (typeof removeFromCoupon === 'function') {
+                removeFromCoupon(match, type);
+            }
             btn.removeClass('selected');
-        }, 500);
+        } else {
+            // Remove selection from other buttons in same match
+            matchCard.find('.oc-odds-btn').removeClass('selected');
+
+            // Add to coupon
+            if (typeof addToCoupon === 'function') {
+                addToCoupon({
+                    matchId: match,
+                    matchName: matchName,
+                    selection: type,
+                    odds: odds,
+                    bookmakerId: bookmaker,
+                    bookmakerName: bookmakerName
+                });
+            }
+            btn.addClass('selected');
+        }
+
+        // Update coupon UI
+        if (typeof updateCouponUI === 'function') {
+            updateCouponUI();
+        }
     });
-    
+
     // Date button click handler
     $('.oc-date-btn').on('click', function() {
         $(this).siblings().removeClass('active');

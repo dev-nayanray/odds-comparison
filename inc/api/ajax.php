@@ -53,6 +53,9 @@ add_action( 'wp_ajax_oc_save_quota_format', 'oc_ajax_save_quota_format' );
     // Comparison tool AJAX actions
     add_action( 'wp_ajax_oc_load_comparison_operators', 'oc_ajax_load_comparison_operators' );
     add_action( 'wp_ajax_nopriv_oc_load_comparison_operators', 'oc_ajax_load_comparison_operators' );
+
+    // Save odds AJAX action
+    add_action( 'wp_ajax_oc_save_odds', 'oc_ajax_save_odds' );
 }
 add_action( 'init', 'oc_register_ajax_actions' );
 
@@ -894,6 +897,39 @@ function oc_ajax_load_comparison_operators() {
         'has_more'      => $page < $query->max_num_pages,
         'per_page'      => $per_page,
     ) );
+}
+
+/**
+ * AJAX handler for saving odds
+ *
+ * Saves odds data for a match via AJAX.
+ *
+ * @since 1.0.0
+ */
+function oc_ajax_save_odds() {
+    check_ajax_referer( 'oc_ajax_nonce', 'nonce' );
+
+    $match_id = isset( $_POST['match_id'] ) ? absint( $_POST['match_id'] ) : 0;
+    $odds_data = isset( $_POST['odds_data'] ) ? $_POST['odds_data'] : array();
+
+    if ( ! $match_id ) {
+        wp_send_json_error( array( 'message' => __( 'Invalid match ID.', 'odds-comparison' ) ) );
+    }
+
+    if ( empty( $odds_data ) || ! is_array( $odds_data ) ) {
+        wp_send_json_error( array( 'message' => __( 'Invalid odds data.', 'odds-comparison' ) ) );
+    }
+
+    // Save odds data
+    $saved = oc_save_match_odds( $match_id, $odds_data );
+
+    if ( $saved ) {
+        wp_send_json_success( array(
+            'message' => __( 'Odds saved successfully.', 'odds-comparison' ),
+        ) );
+    } else {
+        wp_send_json_error( array( 'message' => __( 'Failed to save odds.', 'odds-comparison' ) ) );
+    }
 }
 
 /**

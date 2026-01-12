@@ -141,7 +141,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </div>
                 
                 <!-- Secondary Links Row -->
-                <div class="oc-footer-secondary">
+                <!-- <div class="oc-footer-secondary">
                     <div class="oc-secondary-col">
                         <h3 class="oc-footer-title"><?php esc_html_e( 'Latest Forecasts', 'odds-comparison' ); ?></h3>
                         <ul class="oc-footer-links">
@@ -163,7 +163,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                             <li><a href="#"><?php esc_html_e( 'Paysafecard Casinos', 'odds-comparison' ); ?></a></li>
                         </ul>
                     </div>
-                </div>
+                </div> -->
                 
                 <!-- Social Media -->
                 <div class="oc-social-section">

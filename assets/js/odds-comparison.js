@@ -665,6 +665,11 @@
     // Initialize Back to Top button
     initBackToTop();
     
+    // Initialize coupon stake input and calculations
+    initStakeInput();
+    initStakePresets();
+    loadCouponState();
+    
 })();
 
 /**
@@ -1257,6 +1262,13 @@ function initCoupon() {
         placeBetBtn.addEventListener('click', placeBet);
     }
 
+    // Stake input validation
+    const stakeInput = document.querySelector('.oc-stake-input');
+    if (stakeInput) {
+        stakeInput.addEventListener('input', validateStakeInput);
+        stakeInput.addEventListener('blur', validateStakeInput);
+    }
+
     // Initialize odds buttons with click handlers
     initOddsButtons();
 
@@ -1407,42 +1419,74 @@ function clearCoupon() {
     });
 
     saveCouponState();
+
+    // Force immediate UI update with a small delay to ensure DOM repaint
     updateCouponUI();
+
+    // Additional update to ensure bet items are cleared
+    setTimeout(function() {
+        const betItems = document.querySelector('.oc-coupon-bets');
+        const emptyState = document.querySelector('.oc-coupon-empty');
+
+        if (betItems && couponItems.length === 0) {
+            betItems.innerHTML = '';
+            betItems.style.display = 'none';
+        }
+        if (emptyState) {
+            emptyState.style.display = 'block';
+        }
+    }, 10);
+
     showToast('Coupon cleared');
 }
 
 function updateCouponUI() {
     const emptyState = document.querySelector('.oc-coupon-empty');
     const betItems = document.querySelector('.oc-coupon-bets');
+    const stakeSection = document.querySelector('.oc-coupon-stake-section');
+    const bookmakersSection = document.querySelector('.oc-coupon-bookmakers');
     const badge = document.querySelector('.oc-popup-badge, .oc-coupon-badge');
-    const headerCount = document.querySelector('.oc-coupon-count');
+    const allCounts = document.querySelectorAll('.oc-coupon-count');
     const count = couponItems.length;
 
     // Update badge count
     if (badge) {
         badge.textContent = count;
-    }
-
-    // Update header count
-    if (headerCount) {
-        headerCount.textContent = count;
         if (count > 0) {
-            headerCount.style.display = 'inline-block';
+            badge.classList.add('has-bets');
         } else {
-            headerCount.style.display = 'none';
+            badge.classList.remove('has-bets');
         }
     }
+
+    // Update all coupon counts (header and popup)
+    allCounts.forEach(function(countEl) {
+        countEl.textContent = count;
+        if (count > 0) {
+            countEl.style.display = 'inline-block';
+        } else {
+            countEl.style.display = 'none';
+        }
+    });
 
     // Show empty state or items
     if (count === 0) {
         if (emptyState) emptyState.style.display = 'block';
         if (betItems) betItems.style.display = 'none';
+        if (stakeSection) stakeSection.style.display = 'none';
+        if (bookmakersSection) bookmakersSection.style.display = 'none';
     } else {
         if (emptyState) emptyState.style.display = 'none';
         if (betItems) {
             betItems.style.display = 'flex';
             betItems.innerHTML = renderCouponItems();
         }
+        // Show stake section and bookmakers
+        if (stakeSection) stakeSection.style.display = 'block';
+        if (bookmakersSection) bookmakersSection.style.display = 'block';
+        
+        // Trigger calculations update
+        updateCouponCalculations();
     }
 }
 
@@ -1496,17 +1540,126 @@ function placeBet() {
     const selectedBookmaker = document.querySelector('.oc-bookmaker-option-card.selected');
     const bookmakerId = selectedBookmaker ? selectedBookmaker.dataset.bookmakerId : 0;
 
-    // In a real implementation, this would redirect to the bookmaker
-    showToast('Redirecting to place your bet...');
+    // Get first item to place a bet (for single bet mode)
+    const item = couponItems[0];
+    if (!item) {
+        showToast('Invalid bet data');
+        return;
+    }
 
-    // Simulate redirect
-    setTimeout(function() {
-        if (bookmakerId) {
-            console.log('Placing bet with bookmaker:', bookmakerId);
+    // Get stake value
+    const stakeInput = document.querySelector('.oc-stake-input');
+    const stake = stakeInput ? parseFloat(stakeInput.value) : 0;
+
+    if (!stake || stake <= 0) {
+        showToast('Please enter a valid stake amount');
+        return;
+    }
+
+    // Show loading state
+    const placeBetBtn = document.querySelector('.oc-place-bet-btn');
+    if (placeBetBtn) {
+        placeBetBtn.disabled = true;
+        placeBetBtn.textContent = ocAjax.loading || 'Processing...';
+    }
+
+    // Prepare data for AJAX
+    const data = {
+        action: 'oc_place_bet',
+        nonce: ocAjax.nonce,
+        match_id: item.matchId,
+        bet_type: item.selection,
+        stake: stake,
+        odds: parseFloat(item.odds),
+        bookmaker_id: bookmakerId
+    };
+
+    // Make AJAX call
+    fetch(ocAjax.ajaxurl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(data)
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(response) {
+        if (response.success) {
+            // Show success message
+            showToast(response.data.message);
+
+            // Update balance display
+            updateBalanceDisplay(response.data.new_balance);
+
+            // Clear the coupon after successful bet
+            setTimeout(function() {
+                clearCoupon();
+                closeCouponPopup();
+            }, 1500);
+
+            // Show bet details
+            showBetConfirmation(response.data);
+        } else {
+            // Show error message
+            showToast(response.data.message || ocAjax.error || 'Failed to place bet');
+
+            // If insufficient balance, show balance
+            if (response.data && response.data.balance !== undefined) {
+                updateBalanceDisplay(response.data.balance);
+            }
         }
-        // For demo purposes, just show the selections
-        console.log('Bets:', couponItems);
-    }, 1000);
+    })
+    .catch(function(error) {
+        console.error('Bet placement error:', error);
+        showToast(ocAjax.error || 'An error occurred. Please try again.');
+    })
+    .finally(function() {
+        // Reset button state
+        if (placeBetBtn) {
+            placeBetBtn.disabled = false;
+            placeBetBtn.textContent = 'Place Bet';
+        }
+    });
+}
+
+/**
+ * Update balance display in the UI
+ */
+function updateBalanceDisplay(balance) {
+    const balanceDisplay = document.querySelector('.oc-user-balance-value');
+    if (balanceDisplay) {
+        balanceDisplay.textContent = '€' + parseFloat(balance).toFixed(2);
+    }
+}
+
+/**
+ * Show bet confirmation after successful placement
+ */
+function showBetConfirmation(betData) {
+    const confirmationHtml =
+        '<div class="oc-bet-confirmation">' +
+            '<div class="oc-confirmation-icon">' +
+                '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>' +
+            '</div>' +
+            '<h3>Bet Placed Successfully!</h3>' +
+            '<div class="oc-confirmation-details">' +
+                '<p><strong>Bet ID:</strong> #' + betData.bet_id + '</p>' +
+                '<p><strong>Match:</strong> ' + escapeHtml(betData.match) + '</p>' +
+                '<p><strong>Selection:</strong> ' + escapeHtml(betData.bet_type) + '</p>' +
+                '<p><strong>Stake:</strong> €' + betData.stake + '</p>' +
+                '<p><strong>Odds:</strong> ' + betData.odds + '</p>' +
+                '<p><strong>Potential Win:</strong> €' + betData.potential_win + '</p>' +
+                '<p><strong>New Balance:</strong> €' + betData.new_balance + '</p>' +
+            '</div>' +
+        '</div>';
+
+    // Show in modal or replace coupon content
+    const couponContent = document.querySelector('.oc-coupon-content');
+    if (couponContent) {
+        couponContent.innerHTML = confirmationHtml;
+    }
 }
 
 // Save coupon state to localStorage
@@ -1578,12 +1731,176 @@ function showToast(message) {
 
 /**
  * ============================================
+ * COUPON STAKE INPUT & CALCULATIONS
+ * ============================================
+ */
+
+/**
+ * Validate stake input and show visual feedback
+ */
+function validateStakeInput() {
+    const stakeInput = document.querySelector('.oc-stake-input');
+    if (!stakeInput) return;
+
+    const value = parseFloat(stakeInput.value);
+    const container = stakeInput.closest('.oc-stake-input-wrapper, .oc-stake-field') || stakeInput.parentElement;
+    
+    // Remove previous validation states
+    stakeInput.classList.remove('valid', 'invalid');
+    
+    if (stakeInput.value === '') {
+        // Empty - no validation state
+        if (container) {
+            container.classList.remove('has-error', 'has-success');
+        }
+        return;
+    }
+    
+    if (isNaN(value) || value <= 0) {
+        // Invalid: not a positive number
+        stakeInput.classList.add('invalid');
+        if (container) {
+            container.classList.add('has-error');
+            container.classList.remove('has-success');
+        }
+    } else if (value > 0) {
+        // Valid positive number
+        stakeInput.classList.add('valid');
+        if (container) {
+            container.classList.add('has-success');
+            container.classList.remove('has-error');
+        }
+    }
+}
+
+// Initialize stake input handler
+function initStakeInput() {
+    const stakeInput = document.querySelector('.oc-stake-input');
+    if (!stakeInput) return;
+
+    stakeInput.addEventListener('input', function() {
+        updateCouponCalculations();
+    });
+
+    stakeInput.addEventListener('change', function() {
+        // Save stake preference
+        const value = parseFloat(this.value);
+        if (!isNaN(value) && value > 0) {
+            try {
+                localStorage.setItem('oc_last_stake', value.toString());
+            } catch (e) {
+                console.log('Failed to save stake preference');
+            }
+        }
+    });
+}
+
+// Initialize stake preset buttons
+function initStakePresets() {
+    const presetButtons = document.querySelectorAll('.oc-stake-preset');
+    if (presetButtons.length === 0) return;
+
+    presetButtons.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            // Update active state
+            presetButtons.forEach(function(b) {
+                b.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            // Get stake value from data attribute
+            const value = this.dataset.stake;
+            const stakeInput = document.querySelector('.oc-stake-input');
+            if (stakeInput && value) {
+                stakeInput.value = value;
+                updateCouponCalculations();
+            }
+        });
+    });
+}
+
+// Update coupon calculations (odds multiplier, potential win, etc.)
+function updateCouponCalculations() {
+    const stakeInput = document.querySelector('.oc-stake-input');
+    const totalOddsEl = document.querySelector('.oc-total-odds');
+    const potentialWinEl = document.querySelector('.oc-potential-win');
+    const stakeEl = document.querySelector('.oc-summary-stake');
+    const totalOddsSummaryEl = document.querySelector('.oc-summary-total-odds');
+    const potentialWinSummaryEl = document.querySelector('.oc-summary-potential-win');
+    const placeBetBtn = document.querySelector('.oc-place-bet-btn');
+
+    const stake = stakeInput ? parseFloat(stakeInput.value) : 0;
+
+    // Calculate total odds (multiply all selections for accumulator)
+    let totalOdds = 1;
+    if (couponItems.length > 0) {
+        couponItems.forEach(function(item) {
+            const odds = parseFloat(item.odds);
+            if (!isNaN(odds) && odds > 0) {
+                totalOdds *= odds;
+            }
+        });
+    }
+
+    // Calculate potential win
+    const potentialWin = (stake > 0 && totalOdds > 0) ? (stake * totalOdds) : 0;
+
+    // Update display
+    if (totalOddsEl) {
+        totalOddsEl.textContent = totalOdds > 0 ? totalOdds.toFixed(2) : '—';
+    }
+
+    if (potentialWinEl) {
+        potentialWinEl.textContent = '€' + potentialWin.toFixed(2);
+    }
+
+    if (stakeEl) {
+        stakeEl.textContent = '€' + stake.toFixed(2);
+    }
+
+    if (totalOddsSummaryEl) {
+        totalOddsSummaryEl.textContent = totalOdds > 0 ? totalOdds.toFixed(2) : '—';
+    }
+
+    if (potentialWinSummaryEl) {
+        potentialWinSummaryEl.textContent = '€' + potentialWin.toFixed(2);
+    }
+
+    // Update place bet button state
+    const isValidBet = couponItems.length > 0 && stake > 0 && totalOdds > 0;
+    if (placeBetBtn) {
+        placeBetBtn.disabled = !isValidBet;
+    }
+
+    // Update localStorage
+    if (stake > 0) {
+        try {
+            localStorage.setItem('oc_last_stake', stake.toString());
+        } catch (e) {
+            console.log('Failed to save stake preference');
+        }
+    }
+
+    // Dispatch custom event for external listeners
+    document.dispatchEvent(new CustomEvent('ocCouponCalculationsUpdated', {
+        detail: {
+            stake: stake,
+            totalOdds: totalOdds,
+            potentialWin: potentialWin,
+            betCount: couponItems.length,
+            isValid: isValidBet
+        }
+    }));
+}
+
+/**
+ * ============================================
  * INITIALIZE ALL HOMEPAGE FUNCTIONS
  * ============================================
  */
+// Note: initCoupon() and loadCouponState() are already called inside the main IIFE above
+// This block is kept for banner slider initialization which is page-specific
 document.addEventListener('DOMContentLoaded', function() {
     initBannerSlider();
-    initCoupon();
-    loadCouponState();
 });
 

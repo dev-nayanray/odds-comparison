@@ -14,12 +14,32 @@ get_header();
 $match_id = get_the_ID();
 $home_team = get_post_meta( $match_id, 'oc_home_team', true );
 $away_team = get_post_meta( $match_id, 'oc_away_team', true );
+
+// If team names are not set in meta, parse from post title
+if ( empty( $home_team ) || empty( $away_team ) ) {
+    $title = get_the_title();
+    $teams = explode( ' vs ', $title );
+    if ( count( $teams ) == 2 ) {
+        $home_team = trim( $teams[0] );
+        $away_team = trim( $teams[1] );
+    }
+}
 $match_date = get_post_meta( $match_id, 'oc_match_date', true );
 $match_time = get_post_meta( $match_id, 'oc_match_time', true );
 $venue = get_post_meta( $match_id, 'oc_venue', true );
 $is_live = get_post_meta( $match_id, 'oc_live_match', true );
 $league = get_the_terms( $match_id, 'league' );
 $league_name = !empty( $league ) && !is_wp_error( $league ) ? $league[0]->name : '';
+
+// Get team terms for logos
+$home_team_term = get_term_by( 'name', $home_team, 'team' );
+$away_team_term = get_term_by( 'name', $away_team, 'team' );
+
+// Get team logos
+$home_team_logo_id = $home_team_term ? get_term_meta( $home_team_term->term_id, 'oc_team_logo_id', true ) : 0;
+$away_team_logo_id = $away_team_term ? get_term_meta( $away_team_term->term_id, 'oc_team_logo_id', true ) : 0;
+$home_team_logo_url = $home_team_logo_id ? wp_get_attachment_image_url( $home_team_logo_id, 'medium' ) : '';
+$away_team_logo_url = $away_team_logo_id ? wp_get_attachment_image_url( $away_team_logo_id, 'medium' ) : '';
 
 // Get odds data
 $odds = oc_get_match_odds( $match_id );
@@ -96,9 +116,9 @@ $forecasts = get_posts( $forecast_args );
                 <div class="oc-match-teams-display">
                     <!-- Home Team -->
                     <div class="oc-team-display oc-team-home">
-                        <?php if ( has_post_thumbnail( $match_id ) ) : ?>
+                        <?php if ( $home_team_logo_url ) : ?>
                             <div class="oc-team-emblem">
-                                <?php echo get_the_post_thumbnail( $match_id, 'medium', array( 'alt' => $home_team ) ); ?>
+                                <img src="<?php echo esc_url( $home_team_logo_url ); ?>" alt="<?php echo esc_attr( $home_team ); ?>" />
                             </div>
                         <?php else : ?>
                             <div class="oc-team-emblem oc-emblem-placeholder">
@@ -123,16 +143,16 @@ $forecasts = get_posts( $forecast_args );
                     
                     <!-- Away Team -->
                     <div class="oc-team-display oc-team-away">
-                        <h1 class="oc-team-name-display"><?php echo esc_html( $away_team ); ?></h1>
-                        <?php if ( has_post_thumbnail( $match_id ) ) : ?>
+                        <?php if ( $away_team_logo_url ) : ?>
                             <div class="oc-team-emblem">
-                                <?php echo get_the_post_thumbnail( $match_id, 'medium', array( 'alt' => $away_team ) ); ?>
+                                <img src="<?php echo esc_url( $away_team_logo_url ); ?>" alt="<?php echo esc_attr( $away_team ); ?>" />
                             </div>
                         <?php else : ?>
                             <div class="oc-team-emblem oc-emblem-placeholder">
                                 <span><?php echo esc_html( substr( $away_team, 0, 3 ) ); ?></span>
                             </div>
                         <?php endif; ?>
+                        <h1 class="oc-team-name-display"><?php echo esc_html( $away_team ); ?></h1>
                     </div>
                 </div>
                 
@@ -325,35 +345,35 @@ $forecasts = get_posts( $forecast_args );
                     </div>
                     
                     <!-- Bookmaker Rows -->
-                    <?php 
-                    // Sample bookmaker data - in production this would come from the database
-                    $sample_bookmakers = array(
-                        array( 'name' => 'TonyBet Spain', 'home' => 3.3, 'draw' => 3.2, 'away' => 2.41, 'rating' => 4.5 ),
-                        array( 'name' => 'Codere Sportsbook Spain', 'home' => 3.15, 'draw' => 3.1, 'away' => 2.40, 'rating' => 4.3 ),
-                        array( 'name' => 'Leo Vegas Spain', 'home' => 3.25, 'draw' => 3.25, 'away' => 2.55, 'rating' => 4.4 ),
-                        array( 'name' => 'Bet365 Spain', 'home' => 3.2, 'draw' => 3.3, 'away' => 2.50, 'rating' => 4.8 ),
-                        array( 'name' => '888 Spain', 'home' => 3.35, 'draw' => 3.15, 'away' => 2.45, 'rating' => 4.2 ),
-                        array( 'name' => 'Bwin Spain', 'home' => 3.4, 'draw' => 3.3, 'away' => 2.40, 'rating' => 4.1 ),
-                        array( 'name' => 'William Hill', 'home' => 3.5, 'draw' => 3.4, 'away' => 2.55, 'rating' => 4.6 ),
-                        array( 'name' => 'Sportium', 'home' => 3.3, 'draw' => 3.2, 'away' => 2.46, 'rating' => 4.0 ),
-                    );
-                    
-                    foreach ( $sample_bookmakers as $index => $bookmaker ) : 
-                        $is_top = $index < 3;
-                        $affiliate_url = '#';
+                    <?php
+                    // Get real odds data from database
+                    $odds_comparison = oc_get_odds_comparison($match_id);
+                    $bookmakers_data = $odds_comparison['bookmakers'];
+
+                    if (!empty($bookmakers_data)) :
+                        foreach ($bookmakers_data as $index => $bookmaker) :
+                            $is_top = $index < 3;
+                            $affiliate_url = $bookmaker['affiliate_url'] ?: '#';
+                            $rating = $bookmaker['rating'] ?: 0;
                     ?>
                         <div class="oc-bookmaker-row <?php echo $is_top ? 'oc-top-bookmaker' : ''; ?>">
                             <div class="oc-bookmaker-col">
                                 <div class="oc-bookmaker-info">
                                     <span class="oc-bookmaker-rank"><?php echo $index + 1; ?></span>
                                     <div class="oc-bookmaker-logo-text">
-                                        <span><?php echo esc_html( substr( $bookmaker['name'], 0, 2 ) ); ?></span>
+                                        <?php if ($bookmaker['logo']) : ?>
+                                            <img src="<?php echo esc_url($bookmaker['logo']); ?>" alt="<?php echo esc_attr($bookmaker['name']); ?>" />
+                                        <?php else : ?>
+                                            <span><?php echo esc_html( substr( $bookmaker['name'], 0, 2 ) ); ?></span>
+                                        <?php endif; ?>
                                     </div>
                                     <div class="oc-bookmaker-details">
-                                        <span class="oc-bookmaker-name"><?php echo esc_html( $bookmaker['name'] ); ?></span>
-                                        <span class="oc-bookmaker-rating">
-                                            <?php echo esc_html( number_format( $bookmaker['rating'], 1 ) ); ?> ★
-                                        </span>
+                                        <span class="oc-bookmaker-name"><?php echo esc_html($bookmaker['name']); ?></span>
+                                        <?php if ($rating > 0) : ?>
+                                            <span class="oc-bookmaker-rating">
+                                                <?php echo esc_html( number_format( $rating, 1 ) ); ?> ★
+                                            </span>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <?php if ( $is_top ) : ?>
@@ -361,19 +381,31 @@ $forecasts = get_posts( $forecast_args );
                                 <?php endif; ?>
                             </div>
                             <div class="oc-odds-col oc-home-col">
-                                <button class="oc-odds-btn" data-odds="<?php echo esc_attr( $bookmaker['home'] ); ?>" data-selection="1" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $index + 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
-                                    <?php echo esc_html( number_format( $bookmaker['home'], 2 ) ); ?>
-                                </button>
+                                <?php if ($bookmaker['odds_home'] > 0) : ?>
+                                    <button class="oc-odds-btn <?php echo $bookmaker['is_best']['home'] ? 'best-odds' : ''; ?>" data-odds="<?php echo esc_attr( $bookmaker['odds_home'] ); ?>" data-selection="1" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $bookmaker['id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
+                                        <?php echo esc_html( number_format( $bookmaker['odds_home'], 2 ) ); ?>
+                                    </button>
+                                <?php else : ?>
+                                    <span class="oc-no-odds">-</span>
+                                <?php endif; ?>
                             </div>
                             <div class="oc-odds-col oc-draw-col">
-                                <button class="oc-odds-btn" data-odds="<?php echo esc_attr( $bookmaker['draw'] ); ?>" data-selection="X" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $index + 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
-                                    <?php echo esc_html( number_format( $bookmaker['draw'], 2 ) ); ?>
-                                </button>
+                                <?php if ($bookmaker['odds_draw'] > 0) : ?>
+                                    <button class="oc-odds-btn <?php echo $bookmaker['is_best']['draw'] ? 'best-odds' : ''; ?>" data-odds="<?php echo esc_attr( $bookmaker['odds_draw'] ); ?>" data-selection="X" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $bookmaker['id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
+                                        <?php echo esc_html( number_format( $bookmaker['odds_draw'], 2 ) ); ?>
+                                    </button>
+                                <?php else : ?>
+                                    <span class="oc-no-odds">-</span>
+                                <?php endif; ?>
                             </div>
                             <div class="oc-odds-col oc-away-col">
-                                <button class="oc-odds-btn" data-odds="<?php echo esc_attr( $bookmaker['away'] ); ?>" data-selection="2" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $index + 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
-                                    <?php echo esc_html( number_format( $bookmaker['away'], 2 ) ); ?>
-                                </button>
+                                <?php if ($bookmaker['odds_away'] > 0) : ?>
+                                    <button class="oc-odds-btn <?php echo $bookmaker['is_best']['away'] ? 'best-odds' : ''; ?>" data-odds="<?php echo esc_attr( $bookmaker['odds_away'] ); ?>" data-selection="2" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $bookmaker['id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
+                                        <?php echo esc_html( number_format( $bookmaker['odds_away'], 2 ) ); ?>
+                                    </button>
+                                <?php else : ?>
+                                    <span class="oc-no-odds">-</span>
+                                <?php endif; ?>
                             </div>
                             <div class="oc-action-col">
                                 <a href="<?php echo esc_url( $affiliate_url ); ?>" class="oc-visit-btn" target="_blank" rel="nofollow">
@@ -382,6 +414,13 @@ $forecasts = get_posts( $forecast_args );
                             </div>
                         </div>
                     <?php endforeach; ?>
+                    <?php else : ?>
+                        <div class="oc-no-odds-row">
+                            <div class="oc-no-odds-message" colspan="5">
+                                <?php esc_html_e('No odds available for this match yet.', 'odds-comparison'); ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 
                 <div class="oc-odds-legend">

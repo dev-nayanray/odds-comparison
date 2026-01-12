@@ -12,6 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
 
+/** @wordpress */
+
 /**
  * Get cached odds data
  * 
@@ -128,9 +130,9 @@ function oc_get_tracked_affiliate_url( $operator_id, $outcome = '', $match_id = 
 
 /**
  * Record affiliate click with tracking information
- * 
+ *
  * @since 1.0.0
- * 
+ *
  * @param int    $operator_id  Operator post ID
  * @param string $click_url    Full click URL with tracking
  * @param string $tracking_id  Visitor tracking ID
@@ -139,9 +141,9 @@ function oc_get_tracked_affiliate_url( $operator_id, $outcome = '', $match_id = 
  */
 function oc_record_affiliate_click_with_tracking( $operator_id, $click_url, $tracking_id, $match_id = 0 ) {
     global $wpdb;
-    
+
     $table_name = $wpdb->prefix . 'oc_affiliate_clicks';
-    
+
     $click_data = array(
         'operator_id'  => absint( $operator_id ),
         'page_url'     => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( $_SERVER['HTTP_REFERER'] ) : '',
@@ -152,9 +154,39 @@ function oc_record_affiliate_click_with_tracking( $operator_id, $click_url, $tra
         'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 500 ) : '',
         'referer'      => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( $_SERVER['HTTP_REFERER'] ) : '',
     );
-    
+
     $format = array( '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
-    
+
+    return $wpdb->insert( $table_name, $click_data, $format );
+}
+
+/**
+ * Record affiliate click
+ *
+ * @since 1.0.0
+ *
+ * @param int   $operator_id Operator post ID
+ * @param array $data        Click data (page_url, click_url)
+ * @return int|false Click record ID or false
+ */
+function oc_record_affiliate_click( $operator_id, $data ) {
+    global $wpdb;
+
+    $table_name = $wpdb->prefix . 'oc_affiliate_clicks';
+
+    $click_data = array(
+        'operator_id'  => absint( $operator_id ),
+        'page_url'     => isset( $data['page_url'] ) ? esc_url_raw( $data['page_url'] ) : '',
+        'click_url'    => isset( $data['click_url'] ) ? esc_url_raw( $data['click_url'] ) : '',
+        'clicked_at'   => current_time( 'mysql' ),
+        'tracking_id'  => oc_get_tracking_id(),
+        'ip_hash'      => oc_get_ip_hash(),
+        'user_agent'   => isset( $_SERVER['HTTP_USER_AGENT'] ) ? substr( $_SERVER['HTTP_USER_AGENT'], 0, 500 ) : '',
+        'referer'      => isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( $_SERVER['HTTP_REFERER'] ) : '',
+    );
+
+    $format = array( '%d', '%s', '%s', '%s', '%s', '%s', '%s' );
+
     return $wpdb->insert( $table_name, $click_data, $format );
 }
 
@@ -1015,9 +1047,9 @@ function oc_get_grouped_matches( $args = array() ) {
 
 /**
  * Get team logo URL
- * 
+ *
  * @since 1.0.0
- * 
+ *
  * @param int|string $team_id Team term ID or name
  * @return string Logo URL or empty string
  */
@@ -1031,10 +1063,14 @@ function oc_get_team_logo( $team_id ) {
             return '';
         }
     }
-    
-    $logo = get_term_meta( absint( $team_id ), 'oc_team_logo', true );
-    
-    return ! empty( $logo ) ? esc_url( $logo ) : '';
+
+    $logo_id = get_term_meta( absint( $team_id ), 'oc_team_logo_id', true );
+
+    if ( ! empty( $logo_id ) ) {
+        return wp_get_attachment_url( $logo_id );
+    }
+
+    return '';
 }
 
 /**
@@ -1152,7 +1188,7 @@ function oc_get_live_matches_list( $args = array() ) {
         $teams = get_the_terms( $match_id, 'team' );
         $home_team = null;
         $away_team = null;
-        
+
         if ( $teams && ! is_wp_error( $teams ) ) {
             $team_count = count( $teams );
             if ( $team_count >= 2 ) {
@@ -1162,7 +1198,7 @@ function oc_get_live_matches_list( $args = array() ) {
                 $home_team = $teams[0];
             }
         }
-        
+
         // Fallback to meta values
         if ( ! $home_team ) {
             $home_team_name = get_post_meta( $match_id, 'oc_match_home_team', true );
@@ -1170,17 +1206,17 @@ function oc_get_live_matches_list( $args = array() ) {
                 $home_team = (object) array( 'name' => $home_team_name );
             }
         }
-        
+
         if ( ! $away_team ) {
             $away_team_name = get_post_meta( $match_id, 'oc_match_away_team', true );
             if ( $away_team_name ) {
                 $away_team = (object) array( 'name' => $away_team_name );
             }
         }
-        
+
         // Get odds
         $odds_data = oc_get_match_live_odds( $match_id );
-        
+
         // Build match data
         $match_data = array(
             'id'           => $match_id,
@@ -1971,11 +2007,305 @@ function oc_render_comparison_card( $operator, $show_pros = 'yes' ) {
             </a>
         </div>
         
-        <div class="oc-comparison-footer">
+    <div class="oc-comparison-footer">
             <span class="oc-tnc-note"><?php esc_html_e( '18+ • T&Cs apply', 'odds-comparison' ); ?></span>
         </div>
     </article>
     <?php
     return ob_get_clean();
+}
+
+/**
+ * Get Premier League matches grouped by date
+ *
+ * Fetches matches for the Premier League (premier-league taxonomy)
+ * and groups them by date with day name display.
+ * Groups as: LIVE NOW, Today, Tomorrow, then by Day Name + Date.
+ *
+ * @since 1.0.0
+ *
+ * @param array $args Query arguments
+ * @return array Grouped Premier League matches
+ */
+function oc_get_premier_league_matches( $args = array() ) {
+    $defaults = array(
+        'posts_per_page' => 20,
+        'post_type'      => 'match',
+        'post_status'    => 'publish',
+        'meta_key'       => 'oc_match_date',
+        'meta_type'      => 'DATE',
+        'meta_query'     => array(
+            array(
+                'key'     => 'oc_match_date',
+                'value'   => date( 'Y-m-d', strtotime( '-1 day' ) ),
+                'compare' => '>=',
+                'type'    => 'DATE',
+            ),
+        ),
+        'orderby'        => 'meta_value',
+        'order'          => 'ASC',
+        'tax_query'      => array(
+            array(
+                'taxonomy' => 'league',
+                'field'    => 'slug',
+                'terms'    => 'premier-league',
+            ),
+        ),
+    );
+
+    $args = wp_parse_args( $args, $defaults );
+
+    $matches = get_posts( $args );
+
+    if ( empty( $matches ) ) {
+        return array();
+    }
+
+    // Grouping: LIVE NOW, Today, Tomorrow, then by date
+    $grouped = array(
+        'live_now' => array(
+            'type'           => 'live',
+            'label'          => __( 'LIVE NOW', 'odds-comparison' ),
+            'label_short'    => __( 'LIVE', 'odds-comparison' ),
+            'date'           => 'live',
+            'day_name'       => __( 'LIVE', 'odds-comparison' ),
+            'date_formatted' => __( 'Live Matches', 'odds-comparison' ),
+            'matches'        => array(),
+        ),
+        'today' => array(
+            'type'           => 'today',
+            'label'          => __( 'Today', 'odds-comparison' ),
+            'label_short'    => __( 'Today', 'odds-comparison' ),
+            'date'           => date( 'Y-m-d' ),
+            'day_name'       => date_i18n( 'l' ),
+            'date_formatted' => date_i18n( 'j F Y' ),
+            'matches'        => array(),
+        ),
+        'tomorrow' => array(
+            'type'           => 'tomorrow',
+            'label'          => __( 'Tomorrow', 'odds-comparison' ),
+            'label_short'    => __( 'Tomorrow', 'odds-comparison' ),
+            'date'           => date( 'Y-m-d', strtotime( '+1 day' ) ),
+            'day_name'       => date_i18n( 'l', strtotime( '+1 day' ) ),
+            'date_formatted' => date_i18n( 'j F Y', strtotime( '+1 day' ) ),
+            'matches'        => array(),
+        ),
+    );
+
+    $today = date( 'Y-m-d' );
+    $tomorrow = date( 'Y-m-d', strtotime( '+1 day' ) );
+
+    foreach ( $matches as $match ) {
+        $match_id = $match->ID;
+        $match_date = get_post_meta( $match_id, 'oc_match_date', true );
+        $match_time = get_post_meta( $match_id, 'oc_match_time', true );
+        $is_live = get_post_meta( $match_id, 'oc_live_match', true );
+
+        if ( empty( $match_date ) ) {
+            continue;
+        }
+
+        // Get teams from taxonomy
+        $teams = get_the_terms( $match_id, 'team' );
+        $home_team = null;
+        $away_team = null;
+
+        if ( $teams && ! is_wp_error( $teams ) ) {
+            $team_count = count( $teams );
+            if ( $team_count >= 2 ) {
+                $home_team = $teams[0];
+                $away_team = $teams[1];
+            } elseif ( $team_count === 1 ) {
+                $home_team = $teams[0];
+            }
+        }
+
+        // Fallback to meta values
+        if ( ! $home_team ) {
+            $home_team_name = get_post_meta( $match_id, 'oc_match_home_team', true );
+            if ( $home_team_name ) {
+                $home_team = (object) array( 'name' => $home_team_name );
+            }
+        }
+
+        if ( ! $away_team ) {
+            $away_team_name = get_post_meta( $match_id, 'oc_match_away_team', true );
+            if ( $away_team_name ) {
+                $away_team = (object) array( 'name' => $away_team_name );
+            }
+        }
+
+        // Get odds
+        $odds = oc_get_match_odds( $match_id );
+        $best_odds = oc_get_best_odds( $odds );
+
+        // Build match data
+        $match_data = array(
+            'id'         => $match_id,
+            'title'      => $match->post_title,
+            'date'       => $match_date,
+            'date_day'   => date_i18n( 'l', strtotime( $match_date ) ), // Day name (e.g., Monday)
+            'date_formatted' => date_i18n( 'j F Y', strtotime( $match_date ) ), // Full date (e.g., 7 January 2026)
+            'time'       => $match_time ? date_i18n( 'H:i', strtotime( $match_time ) ) : '',
+            'home_team'  => $home_team ? $home_team->name : '',
+            'away_team'  => $away_team ? $away_team->name : '',
+            'home_logo'  => $home_team && isset( $home_team->term_id ) ? oc_get_team_logo( $home_team->term_id ) : '',
+            'away_logo'  => $away_team && isset( $away_team->term_id ) ? oc_get_team_logo( $away_team->term_id ) : '',
+            'odds'       => $best_odds,
+            'has_odds'   => ! empty( $odds ),
+            'permalink'  => get_permalink( $match_id ),
+            'is_live'    => $is_live,
+        );
+
+        // Sort into groups: LIVE NOW first, then by date
+        if ( $is_live ) {
+            // Live matches go to LIVE NOW group
+            $grouped['live_now']['matches'][] = $match_data;
+        } elseif ( $match_date === $today ) {
+            // Today's matches
+            $grouped['today']['matches'][] = $match_data;
+        } elseif ( $match_date === $tomorrow ) {
+            // Tomorrow's matches
+            $grouped['tomorrow']['matches'][] = $match_data;
+        } else {
+            // Future dates - create new group
+            $date_key = 'future_' . $match_date;
+            if ( ! isset( $grouped[ $date_key ] ) ) {
+                $grouped[ $date_key ] = array(
+                    'type'           => 'future',
+                    'label'          => date_i18n( 'l, j F Y', strtotime( $match_date ) ),
+                    'label_short'    => date_i18n( 'l j', strtotime( $match_date ) ),
+                    'date'           => $match_date,
+                    'day_name'       => date_i18n( 'l', strtotime( $match_date ) ),
+                    'date_formatted' => date_i18n( 'j F Y', strtotime( $match_date ) ),
+                    'matches'        => array(),
+                );
+            }
+            $grouped[ $date_key ]['matches'][] = $match_data;
+        }
+    }
+
+    // Remove empty groups and reindex
+    $grouped = array_filter( $grouped, function( $group ) {
+        return ! empty( $group['matches'] );
+    });
+
+    return array_values( $grouped );
+}
+
+/**
+ * Render Premier League matches section
+ *
+ * @since 1.0.0
+ *
+ * @param array $args Shortcode/function arguments
+ */
+function oc_render_premier_league_section( $args = array() ) {
+    $defaults = array(
+        'limit'          => 10,
+        'title'          => __( 'Premier League Matches', 'odds-comparison' ),
+        'container_id'   => 'oc-premier-league-' . uniqid(),
+    );
+
+    $args = wp_parse_args( $args, $defaults );
+
+    $matches = oc_get_premier_league_matches( array( 'posts_per_page' => absint( $args['limit'] ) ) );
+
+    if ( empty( $matches ) ) {
+        return;
+    }
+
+    $container_id = $args['container_id'];
+    ?>
+    <section id="<?php echo esc_attr( $container_id ); ?>" class="oc-premier-league-section">
+        <div class="oc-container">
+            <h2 class="oc-section-title">
+                <?php echo esc_html( $args['title'] ); ?>
+                <span class="oc-premier-league-badge">🇬🇧</span>
+            </h2>
+
+            <div class="oc-pl-matches">
+                <?php foreach ( $matches as $date_group ) : ?>
+                    <div class="oc-pl-date-group">
+                        <div class="oc-pl-date-header">
+                            <span class="oc-pl-day-name"><?php echo esc_html( $date_group['day_name'] ); ?></span>
+                            <span class="oc-pl-date"><?php echo esc_html( $date_group['date_formatted'] ); ?></span>
+                        </div>
+
+                        <div class="oc-pl-matches-list">
+                            <?php foreach ( $date_group['matches'] as $match ) : ?>
+                                <article class="oc-pl-match-card">
+                                    <div class="oc-pl-match-time">
+                                        <?php if ( $match['time'] ) : ?>
+                                            <span class="time"><?php echo esc_html( $match['time'] ); ?></span>
+                                        <?php else : ?>
+                                            <span class="time TBD"><?php esc_html_e( 'TBD', 'odds-comparison' ); ?></span>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <div class="oc-pl-match-teams">
+                                        <div class="oc-pl-team oc-pl-home">
+                                            <?php if ( $match['home_logo'] ) : ?>
+                                                <img src="<?php echo esc_url( $match['home_logo'] ); ?>" alt="<?php echo esc_attr( $match['home_team'] ); ?>" class="oc-pl-team-logo">
+                                            <?php endif; ?>
+                                            <span class="oc-pl-team-name"><?php echo esc_html( $match['home_team'] ); ?></span>
+                                        </div>
+
+                                        <div class="oc-pl-vs">
+                                            <span class="vs-text"><?php esc_html_e( 'vs', 'odds-comparison' ); ?></span>
+                                        </div>
+
+                                        <div class="oc-pl-team oc-pl-away">
+                                            <?php if ( $match['away_logo'] ) : ?>
+                                                <img src="<?php echo esc_url( $match['away_logo'] ); ?>" alt="<?php echo esc_attr( $match['away_team'] ); ?>" class="oc-pl-team-logo">
+                                            <?php endif; ?>
+                                            <span class="oc-pl-team-name"><?php echo esc_html( $match['away_team'] ); ?></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="oc-pl-match-odds">
+                                        <?php if ( $match['odds']['home']['odds'] > 0 ) : ?>
+                                            <a href="<?php echo esc_url( oc_get_affiliate_url( $match['odds']['home']['bookmaker_id'], $match['id'], 'home' ) ); ?>"
+                                               class="oc-pl-odd oc-pl-odd-home"
+                                               target="_blank"
+                                               rel="nofollow sponsored">
+                                                <span class="odd-value"><?php echo esc_html( number_format( $match['odds']['home']['odds'], 2 ) ); ?></span>
+                                                <span class="odd-label"><?php esc_html_e( '1', 'odds-comparison' ); ?></span>
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <?php if ( $match['odds']['draw']['odds'] > 0 ) : ?>
+                                            <a href="<?php echo esc_url( oc_get_affiliate_url( $match['odds']['draw']['bookmaker_id'], $match['id'], 'draw' ) ); ?>"
+                                               class="oc-pl-odd oc-pl-odd-draw"
+                                               target="_blank"
+                                               rel="nofollow sponsored">
+                                                <span class="odd-value"><?php echo esc_html( number_format( $match['odds']['draw']['odds'], 2 ) ); ?></span>
+                                                <span class="odd-label"><?php esc_html_e( 'X', 'odds-comparison' ); ?></span>
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <?php if ( $match['odds']['away']['odds'] > 0 ) : ?>
+                                            <a href="<?php echo esc_url( oc_get_affiliate_url( $match['odds']['away']['bookmaker_id'], $match['id'], 'away' ) ); ?>"
+                                               class="oc-pl-odd oc-pl-odd-away"
+                                               target="_blank"
+                                               rel="nofollow sponsored">
+                                                <span class="odd-value"><?php echo esc_html( number_format( $match['odds']['away']['odds'], 2 ) ); ?></span>
+                                                <span class="odd-label"><?php esc_html_e( '2', 'odds-comparison' ); ?></span>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+
+                                    <a href="<?php echo esc_url( $match['permalink'] ); ?>" class="oc-pl-match-link">
+                                        <?php esc_html_e( 'Compare', 'odds-comparison' ); ?>
+                                    </a>
+                                </article>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </section>
+    <?php
 }
 
