@@ -60,7 +60,7 @@ get_header(); ?>
 
 <?php
 // Check if sidebar should be displayed
-if ( is_active_sidebar( 'sidebar-1' ) ) {
+if ( is_active_sidebar( 'sidebar-1' ) || is_home() ) {
     get_sidebar();
 }
 

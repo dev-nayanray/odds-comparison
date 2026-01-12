@@ -1,0 +1,668 @@
+/* Enhanced Operator Single Page Styles */
+
+.oc-operator-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.oc-operator-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.oc-operator-logo {
+    flex: 0 0 150px;
+}
+
+.oc-operator-logo img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.oc-operator-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.oc-operator-title {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.oc-operator-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.oc-stars {
+    display: flex;
+    gap: 2px;
+}
+
+.oc-stars .star {
+    color: #ddd;
+    font-size: 20px;
+}
+
+.oc-stars .star.filled {
+    color: #ffd700;
+}
+
+.oc-rating-value {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+.oc-review-count {
+    color: #666;
+    font-size: 14px;
+}
+
+.oc-operator-licenses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.oc-license-badge {
+    background: #e8f5e8;
+    color: #27ae60;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.oc-operator-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.oc-feature {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #666;
+    font-size: 14px;
+}
+
+.oc-operator-cta {
+    flex: 0 0 200px;
+    text-align: center;
+}
+
+.oc-visit-btn {
+    background: #27ae60;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s;
+}
+
+.oc-visit-btn:hover {
+    background: #219a52;
+}
+
+/* Bonus Section */
+.oc-operator-bonus {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.oc-bonus-card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.oc-bonus-amount {
+    font-size: 3em;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.oc-bonus-type {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.oc-bonus-code {
+    background: rgba(255,255,255,0.2);
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.oc-bonus-code code {
+    background: none;
+    color: white;
+    font-weight: bold;
+}
+
+.oc-bonus-details {
+    margin-top: 20px;
+}
+
+.oc-bonus-description {
+    margin-bottom: 15px;
+    font-size: 16px;
+}
+
+.oc-bonus-terms {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    display: inline-block;
+}
+
+.oc-bonus-terms li {
+    margin-bottom: 5px;
+}
+
+/* Tabs */
+.oc-operator-tabs {
+    display: flex;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+.oc-tab-button {
+    flex: 1;
+    padding: 15px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s;
+    border-bottom: 3px solid transparent;
+}
+
+.oc-tab-button:hover {
+    background: #e9ecef;
+    color: #333;
+}
+
+.oc-tab-button.active {
+    background: white;
+    color: #27ae60;
+    border-bottom-color: #27ae60;
+}
+
+/* Tab Content */
+.oc-operator-content {
+    background: white;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.oc-tab-content {
+    display: none;
+    padding: 30px;
+}
+
+.oc-tab-content.active {
+    display: block;
+}
+
+.oc-operator-main {
+    margin-bottom: 30px;
+}
+
+.oc-operator-description h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8em;
+}
+
+/* Pros and Cons */
+.oc-operator-pros-cons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.oc-pros, .oc-cons {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.oc-pros h3 {
+    color: #27ae60;
+}
+
+.oc-cons h3 {
+    color: #e74c3c;
+}
+
+.oc-pros ul, .oc-cons ul {
+    list-style: none;
+    padding: 0;
+}
+
+.oc-pros li, .oc-cons li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.oc-pros li:last-child, .oc-cons li:last-child {
+    border-bottom: none;
+}
+
+/* Payment Methods */
+.oc-payment-methods {
+    margin-bottom: 40px;
+}
+
+.oc-payment-methods h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.oc-payment-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.oc-payment-method {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: 1px solid #dee2e6;
+}
+
+/* Sidebar */
+.oc-operator-sidebar {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.oc-sidebar-widget {
+    margin-bottom: 30px;
+}
+
+.oc-sidebar-widget:last-child {
+    margin-bottom: 0;
+}
+
+.oc-sidebar-widget h4 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+.oc-stats-list, .oc-features-list {
+    list-style: none;
+    padding: 0;
+}
+
+.oc-stats-list li, .oc-features-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.oc-stats-list li:last-child, .oc-features-list li:last-child {
+    border-bottom: none;
+}
+
+/* Bonuses Tab */
+.oc-current-bonus {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.oc-bonus-header h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.oc-bonus-updated {
+    color: #666;
+    font-size: 14px;
+}
+
+.oc-bonus-description {
+    margin: 20px 0;
+    line-height: 1.6;
+}
+
+.oc-bonus-details {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.oc-bonus-terms h4 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.oc-bonus-terms ul {
+    list-style: none;
+    padding: 0;
+}
+
+.oc-bonus-terms li {
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.oc-claim-bonus {
+    background: #27ae60;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s;
+}
+
+.oc-claim-bonus:hover {
+    background: #219a52;
+}
+
+/* Reviews Tab */
+.oc-reviews-section {
+    max-width: 800px;
+}
+
+.oc-reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.oc-reviews-summary {
+    text-align: right;
+}
+
+.oc-average-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.oc-average-rating .oc-stars {
+    font-size: 24px;
+}
+
+.oc-average-rating .oc-rating-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.oc-average-rating .oc-review-count {
+    color: #666;
+    font-size: 16px;
+}
+
+/* Review Form */
+.oc-review-form {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.oc-review-form h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.oc-form-group {
+    margin-bottom: 20px;
+}
+
+.oc-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.oc-form-group input,
+.oc-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.oc-rating-input {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.oc-rating-input input[type="radio"] {
+    display: none;
+}
+
+.oc-rating-input label {
+    padding: 10px 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.oc-rating-input input[type="radio"]:checked + label {
+    background: #ffd700;
+    border-color: #ffd700;
+    color: #333;
+}
+
+.oc-login-prompt {
+    background: #fff3cd;
+    color: #856404;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Reviews List */
+.oc-reviews-list {
+    margin-top: 40px;
+}
+
+.oc-review-item {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.oc-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.oc-review-author {
+    font-weight: bold;
+    color: #333;
+}
+
+.oc-review-rating .oc-stars {
+    font-size: 16px;
+}
+
+.oc-review-date {
+    color: #666;
+    font-size: 14px;
+}
+
+.oc-review-content {
+    line-height: 1.6;
+    color: #555;
+}
+
+/* Sports Tab */
+.oc-sports-section h2 {
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.oc-sports-supported {
+    margin-bottom: 40px;
+}
+
+.oc-sports-supported h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.oc-sports-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.oc-sport-item {
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    border: 1px solid #dee2e6;
+}
+
+.oc-betting-features h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.oc-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.oc-feature-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.oc-feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.oc-feature-card .dashicons {
+    font-size: 32px;
+    color: #27ae60;
+    margin-bottom: 15px;
+}
+
+.oc-feature-card h4 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.oc-feature-card p {
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .oc-operator-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .oc-operator-cta {
+        flex: none;
+        width: 100%;
+    }
+
+    .oc-operator-pros-cons {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .oc-operator-tabs {
+        flex-direction: column;
+    }
+
+    .oc-tab-button {
+        border-bottom: none;
+        border-right: 3px solid transparent;
+    }
+
+    .oc-tab-button.active {
+        border-bottom-color: transparent;
+        border-right-color: #27ae60;
+    }
+
+    .oc-bonus-details {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .oc-reviews-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .oc-reviews-summary {
+        text-align: center;
+    }
+
+    .oc-features-grid {
+        grid-template-columns: 1fr;
+    }
+}

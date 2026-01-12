@@ -89,6 +89,19 @@ function oc_load_theme_files() {
 }
 add_action( 'after_setup_theme', 'oc_load_theme_files' );
 
+/**
+ * Import demo data after theme files are loaded
+ *
+ * @since 1.0.0
+ */
+function oc_import_demo_data_after_load() {
+    // Import demo data if not already imported
+    if ( ! get_option( 'oc_demo_data_imported', false ) ) {
+        oc_import_demo_data_on_activation();
+    }
+}
+add_action( 'after_setup_theme', 'oc_import_demo_data_after_load', 20 );
+
 /* =====================================================
  * THEME SETUP
  * ===================================================== */
@@ -498,6 +511,382 @@ function oc_theme_activation_notice() {
     update_option( 'oc_theme_activated', true );
 }
 add_action( 'admin_notices', 'oc_admin_notices' );
+
+/**
+ * Handle AJAX request to save odds format preference
+ *
+ * @since 1.0.0
+ */
+function oc_save_odds_format() {
+    // Check nonce for security
+    if ( ! wp_verify_nonce( $_POST['nonce'], 'oc_ajax_nonce' ) ) {
+        wp_send_json_error( array( 'message' => __( 'Security check failed.', 'odds-comparison' ) ) );
+    }
+
+    // Check if user is logged in
+    if ( ! is_user_logged_in() ) {
+        wp_send_json_error( array( 'message' => __( 'You must be logged in to save preferences.', 'odds-comparison' ) ) );
+    }
+
+    $format = sanitize_text_field( $_POST['format'] );
+
+    // Validate format
+    $valid_formats = array( 'decimal', 'fractional', 'american' );
+    if ( ! in_array( $format, $valid_formats ) ) {
+        wp_send_json_error( array( 'message' => __( 'Invalid odds format.', 'odds-comparison' ) ) );
+    }
+
+    // Save to user meta
+    update_user_meta( get_current_user_id(), 'oc_odds_format', $format );
+
+    wp_send_json_success( array( 'message' => __( 'Preference saved successfully.', 'odds-comparison' ) ) );
+}
+add_action( 'wp_ajax_oc_save_odds_format', 'oc_save_odds_format' );
+
+/**
+ * Get user's preferred odds format
+ *
+ * @since 1.0.0
+ *
+ * @param int $user_id User ID
+ * @return string Odds format (decimal, fractional, american)
+ */
+function oc_get_user_odds_format( $user_id = null ) {
+    if ( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+
+    $format = get_user_meta( $user_id, 'oc_odds_format', true );
+
+    // Default to decimal if not set
+    if ( empty( $format ) ) {
+        $format = 'decimal';
+    }
+
+    return $format;
+}
+
+/**
+ * Enable user registration if not already enabled
+ *
+ * @since 1.0.0
+ */
+function oc_enable_user_registration() {
+    // Enable user registration in WordPress settings
+    update_option( 'users_can_register', 1 );
+}
+add_action( 'after_setup_theme', 'oc_enable_user_registration' );
+
+/**
+ * Handle user registration
+ *
+ * @since 1.0.0
+ */
+function oc_handle_registration() {
+    if ( isset( $_POST['oc_register_submit'] ) && wp_verify_nonce( $_POST['oc_register_nonce'], 'oc_register_action' ) ) {
+        $username = sanitize_user( $_POST['username'] );
+        $email = sanitize_email( $_POST['email'] );
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
+
+        $errors = array();
+
+        // Validation
+        if ( empty( $username ) ) {
+            $errors[] = __( 'Username is required.', 'odds-comparison' );
+        } elseif ( username_exists( $username ) ) {
+            $errors[] = __( 'Username already exists.', 'odds-comparison' );
+        }
+
+        if ( empty( $email ) ) {
+            $errors[] = __( 'Email is required.', 'odds-comparison' );
+        } elseif ( ! is_email( $email ) ) {
+            $errors[] = __( 'Invalid email address.', 'odds-comparison' );
+        } elseif ( email_exists( $email ) ) {
+            $errors[] = __( 'Email already exists.', 'odds-comparison' );
+        }
+
+        if ( empty( $password ) ) {
+            $errors[] = __( 'Password is required.', 'odds-comparison' );
+        } elseif ( strlen( $password ) < 6 ) {
+            $errors[] = __( 'Password must be at least 6 characters.', 'odds-comparison' );
+        }
+
+        if ( $password !== $confirm_password ) {
+            $errors[] = __( 'Passwords do not match.', 'odds-comparison' );
+        }
+
+        if ( empty( $errors ) ) {
+            $user_id = wp_create_user( $username, $password, $email );
+
+            if ( ! is_wp_error( $user_id ) ) {
+                // Log the user in
+                wp_set_current_user( $user_id );
+                wp_set_auth_cookie( $user_id );
+
+                // Redirect to profile page
+                wp_redirect( home_url( '/profile' ) );
+                exit;
+            } else {
+                $errors[] = $user_id->get_error_message();
+            }
+        }
+
+        // Store errors in session for display
+        if ( ! empty( $errors ) ) {
+            set_transient( 'oc_registration_errors', $errors, 30 );
+            wp_redirect( get_permalink() );
+            exit;
+        }
+    }
+}
+add_action( 'template_redirect', 'oc_handle_registration' );
+
+/**
+ * Handle password reset
+ *
+ * @since 1.0.0
+ */
+function oc_handle_password_reset() {
+    if ( isset( $_POST['oc_reset_submit'] ) && wp_verify_nonce( $_POST['oc_reset_nonce'], 'oc_reset_action' ) ) {
+        $user_login = sanitize_user( $_POST['user_login'] );
+
+        $errors = array();
+
+        if ( empty( $user_login ) ) {
+            $errors[] = __( 'Please enter your username or email address.', 'odds-comparison' );
+        }
+
+        if ( empty( $errors ) ) {
+            $user_data = get_user_by( 'login', $user_login );
+
+            if ( ! $user_data ) {
+                $user_data = get_user_by( 'email', $user_login );
+            }
+
+            if ( $user_data ) {
+                $reset_result = retrieve_password( $user_data->user_login );
+
+                if ( is_wp_error( $reset_result ) ) {
+                    $errors[] = $reset_result->get_error_message();
+                } else {
+                    set_transient( 'oc_reset_success', __( 'Check your email for the password reset link.', 'odds-comparison' ), 30 );
+                    wp_redirect( get_permalink() );
+                    exit;
+                }
+            } else {
+                $errors[] = __( 'Invalid username or email address.', 'odds-comparison' );
+            }
+        }
+
+        // Store errors in session for display
+        if ( ! empty( $errors ) ) {
+            set_transient( 'oc_reset_errors', $errors, 30 );
+            wp_redirect( get_permalink() );
+            exit;
+        }
+    }
+}
+add_action( 'template_redirect', 'oc_handle_password_reset' );
+
+/**
+ * Get registration errors
+ *
+ * @since 1.0.0
+ * @return array
+ */
+function oc_get_registration_errors() {
+    $errors = get_transient( 'oc_registration_errors' );
+    if ( $errors ) {
+        delete_transient( 'oc_registration_errors' );
+        return $errors;
+    }
+    return array();
+}
+
+/**
+ * Get password reset errors
+ *
+ * @since 1.0.0
+ * @return array
+ */
+function oc_get_reset_errors() {
+    $errors = get_transient( 'oc_reset_errors' );
+    if ( $errors ) {
+        delete_transient( 'oc_reset_errors' );
+        return $errors;
+    }
+    return array();
+}
+
+/**
+ * Get password reset success message
+ *
+ * @since 1.0.0
+ * @return string
+ */
+function oc_get_reset_success() {
+    $message = get_transient( 'oc_reset_success' );
+    if ( $message ) {
+        delete_transient( 'oc_reset_success' );
+        return $message;
+    }
+    return '';
+}
+
+/**
+ * Handle user login
+ *
+ * @since 1.0.0
+ */
+function oc_handle_login() {
+    if ( isset( $_POST['oc_login_submit'] ) && wp_verify_nonce( $_POST['oc_login_nonce'], 'oc_login_action' ) ) {
+        $username = sanitize_user( $_POST['username'] );
+        $password = $_POST['password'];
+        $remember = isset( $_POST['remember'] ) ? true : false;
+
+        $errors = array();
+
+        // Validation
+        if ( empty( $username ) ) {
+            $errors[] = __( 'Username or email is required.', 'odds-comparison' );
+        }
+
+        if ( empty( $password ) ) {
+            $errors[] = __( 'Password is required.', 'odds-comparison' );
+        }
+
+        if ( empty( $errors ) ) {
+            $creds = array(
+                'user_login'    => $username,
+                'user_password' => $password,
+                'remember'      => $remember,
+            );
+
+            $user = wp_signon( $creds, false );
+
+            if ( ! is_wp_error( $user ) ) {
+                wp_redirect( home_url( '/profile' ) );
+                exit;
+            } else {
+                $errors[] = $user->get_error_message();
+            }
+        }
+
+        // Store errors in session for display
+        if ( ! empty( $errors ) ) {
+            set_transient( 'oc_login_errors', $errors, 30 );
+            wp_redirect( get_permalink() );
+            exit;
+        }
+    }
+}
+add_action( 'template_redirect', 'oc_handle_login' );
+
+/**
+ * Get login errors
+ *
+ * @since 1.0.0
+ * @return array
+ */
+function oc_get_login_errors() {
+    $errors = get_transient( 'oc_login_errors' );
+    if ( $errors ) {
+        delete_transient( 'oc_login_errors' );
+        return $errors;
+    }
+    return array();
+}
+
+/**
+ * Customize password reset email
+ *
+ * @since 1.0.0
+ *
+ * @param string $message Password reset message
+ * @param string $key Password reset key
+ * @param string $user_login User login
+ * @param object $user_data User data
+ * @return string Modified message
+ */
+function oc_password_reset_message( $message, $key, $user_login, $user_data ) {
+    $site_name = get_bloginfo( 'name' );
+    $reset_url = network_site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' );
+
+    $message = __( 'Someone has requested a password reset for the following account:', 'odds-comparison' ) . "\r\n\r\n";
+    $message .= sprintf( __( 'Site Name: %s', 'odds-comparison' ), $site_name ) . "\r\n\r\n";
+    $message .= sprintf( __( 'Username: %s', 'odds-comparison' ), $user_login ) . "\r\n\r\n";
+    $message .= __( 'If this was a mistake, just ignore this email and nothing will happen.', 'odds-comparison' ) . "\r\n\r\n";
+    $message .= sprintf( __( 'To reset your password, visit the following address: %s', 'odds-comparison' ), $reset_url ) . "\r\n\r\n";
+
+    return $message;
+}
+add_filter( 'retrieve_password_message', 'oc_password_reset_message', 10, 4 );
+
+/**
+ * Redirect users after login
+ *
+ * @since 1.0.0
+ *
+ * @param string $redirect_to URL to redirect to
+ * @param string $request URL the user is coming from
+ * @param object $user Logged in user object
+ * @return string Redirect URL
+ */
+function oc_login_redirect( $redirect_to, $request, $user ) {
+    // Redirect to profile page after login
+    if ( isset( $user->roles ) && is_array( $user->roles ) ) {
+        return home_url( '/profile' );
+    }
+    return $redirect_to;
+}
+add_filter( 'login_redirect', 'oc_login_redirect', 10, 3 );
+
+/**
+ * Add custom user fields to profile
+ *
+ * @since 1.0.0
+ *
+ * @param object $user User object
+ */
+function oc_user_profile_fields( $user ) {
+    ?>
+    <h3><?php esc_html_e( 'Betting Preferences', 'odds-comparison' ); ?></h3>
+    <table class="form-table">
+        <tr>
+            <th><label for="oc_odds_format"><?php esc_html_e( 'Preferred Odds Format', 'odds-comparison' ); ?></label></th>
+            <td>
+                <select name="oc_odds_format" id="oc_odds_format">
+                    <option value="decimal" <?php selected( get_user_meta( $user->ID, 'oc_odds_format', true ), 'decimal' ); ?>><?php esc_html_e( 'Decimal (2.10)', 'odds-comparison' ); ?></option>
+                    <option value="fractional" <?php selected( get_user_meta( $user->ID, 'oc_odds_format', true ), 'fractional' ); ?>><?php esc_html_e( 'Fractional (11/10)', 'odds-comparison' ); ?></option>
+                    <option value="american" <?php selected( get_user_meta( $user->ID, 'oc_odds_format', true ), 'american' ); ?>><?php esc_html_e( 'American (+110)', 'odds-comparison' ); ?></option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+add_action( 'show_user_profile', 'oc_user_profile_fields' );
+add_action( 'edit_user_profile', 'oc_user_profile_fields' );
+
+/**
+ * Save custom user fields
+ *
+ * @since 1.0.0
+ *
+ * @param int $user_id User ID
+ */
+function oc_save_user_profile_fields( $user_id ) {
+    if ( ! current_user_can( 'edit_user', $user_id ) ) {
+        return false;
+    }
+
+    if ( isset( $_POST['oc_odds_format'] ) ) {
+        update_user_meta( $user_id, 'oc_odds_format', sanitize_text_field( $_POST['oc_odds_format'] ) );
+    }
+}
+add_action( 'personal_options_update', 'oc_save_user_profile_fields' );
+add_action( 'edit_user_profile_update', 'oc_save_user_profile_fields' );
 
 function oc_output_seo_meta_tags() {
 

@@ -162,7 +162,7 @@ $forecasts = get_posts( $forecast_args );
                         <span class="oc-selection-type"><?php esc_html_e( 'Winner', 'odds-comparison' ); ?></span>
                     </div>
                     <div class="oc-odd-value-large">
-                        <?php echo $best_odds['home'] ? esc_html( number_format( $best_odds['home']['odds_home'], 2 ) ) : '-'; ?>
+                        <?php echo $best_odds['home']['odds'] > 0 ? esc_html( number_format( $best_odds['home']['odds'] ?? 0, 2 ) ) : '-'; ?>
                     </div>
                     <a href="#odds-comparison" class="oc-compare-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -177,7 +177,7 @@ $forecasts = get_posts( $forecast_args );
                         <span class="oc-selection-type"><?php esc_html_e( 'Winner', 'odds-comparison' ); ?></span>
                     </div>
                     <div class="oc-odd-value-large">
-                        <?php echo $best_odds['draw'] ? esc_html( number_format( $best_odds['draw']['odds_draw'], 2 ) ) : '-'; ?>
+                        <?php echo $best_odds['draw']['odds'] > 0 ? esc_html( number_format( $best_odds['draw']['odds'] ?? 0, 2 ) ) : '-'; ?>
                     </div>
                     <a href="#odds-comparison" class="oc-compare-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -192,7 +192,7 @@ $forecasts = get_posts( $forecast_args );
                         <span class="oc-selection-type"><?php esc_html_e( 'Winner', 'odds-comparison' ); ?></span>
                     </div>
                     <div class="oc-odd-value-large">
-                        <?php echo $best_odds['away'] ? esc_html( number_format( $best_odds['away']['odds_away'], 2 ) ) : '-'; ?>
+                        <?php echo $best_odds['away']['odds'] > 0 ? esc_html( number_format( $best_odds['away']['odds'] ?? 0, 2 ) ) : '-'; ?>
                     </div>
                     <a href="#odds-comparison" class="oc-compare-link">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -217,12 +217,12 @@ $forecasts = get_posts( $forecast_args );
                         <div class="oc-handicap-row">
                             <span class="oc-handicap-team"><?php echo esc_html( $away_team ); ?></span>
                             <span class="oc-handicap-value">-0.5</span>
-                            <span class="oc-handicap-odds"><?php echo $best_odds['away'] ? esc_html( number_format( $best_odds['away']['odds_away'] - 0.1, 2 ) ) : '-'; ?></span>
+                            <span class="oc-handicap-odds"><?php echo isset( $best_odds['away']['odds'] ) && $best_odds['away']['odds'] > 0 ? esc_html( number_format( $best_odds['away']['odds'] - 0.1, 2 ) ) : '-'; ?></span>
                         </div>
                         <div class="oc-handicap-row">
                             <span class="oc-handicap-team"><?php echo esc_html( $home_team ); ?></span>
                             <span class="oc-handicap-value">+0.5</span>
-                            <span class="oc-handicap-odds"><?php echo $best_odds['home'] ? esc_html( number_format( $best_odds['home']['odds_home'] - 0.1, 2 ) ) : '-'; ?></span>
+                            <span class="oc-handicap-odds"><?php echo isset( $best_odds['home']['odds'] ) && $best_odds['home']['odds'] > 0 ? esc_html( number_format( $best_odds['home']['odds'] - 0.1, 2 ) ) : '-'; ?></span>
                         </div>
                     </div>
                     <a href="#special-bets" class="oc-view-more-btn">
@@ -361,19 +361,19 @@ $forecasts = get_posts( $forecast_args );
                                 <?php endif; ?>
                             </div>
                             <div class="oc-odds-col oc-home-col">
-                                <a href="<?php echo esc_url( $affiliate_url ); ?>" class="oc-odds-btn" target="_blank" rel="nofollow">
+                                <button class="oc-odds-btn" data-odds="<?php echo esc_attr( $bookmaker['home'] ); ?>" data-selection="1" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $index + 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
                                     <?php echo esc_html( number_format( $bookmaker['home'], 2 ) ); ?>
-                                </a>
+                                </button>
                             </div>
                             <div class="oc-odds-col oc-draw-col">
-                                <a href="<?php echo esc_url( $affiliate_url ); ?>" class="oc-odds-btn" target="_blank" rel="nofollow">
+                                <button class="oc-odds-btn" data-odds="<?php echo esc_attr( $bookmaker['draw'] ); ?>" data-selection="X" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $index + 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
                                     <?php echo esc_html( number_format( $bookmaker['draw'], 2 ) ); ?>
-                                </a>
+                                </button>
                             </div>
                             <div class="oc-odds-col oc-away-col">
-                                <a href="<?php echo esc_url( $affiliate_url ); ?>" class="oc-odds-btn" target="_blank" rel="nofollow">
+                                <button class="oc-odds-btn" data-odds="<?php echo esc_attr( $bookmaker['away'] ); ?>" data-selection="2" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $index + 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( $bookmaker['name'] ); ?>">
                                     <?php echo esc_html( number_format( $bookmaker['away'], 2 ) ); ?>
-                                </a>
+                                </button>
                             </div>
                             <div class="oc-action-col">
                                 <a href="<?php echo esc_url( $affiliate_url ); ?>" class="oc-visit-btn" target="_blank" rel="nofollow">

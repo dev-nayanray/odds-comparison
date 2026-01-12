@@ -72,7 +72,7 @@ add_filter( 'template_include', 'oc_load_custom_templates', 99 );
  * @return string|false Template file path or false if not found
  */
 function oc_locate_template( $template_name ) {
-    $template_path = OC_PLUGIN_DIR . 'templates/' . $template_name;
+    $template_path = OC_THEME_DIR . '/templates/' . $template_name;
 
     if ( file_exists( $template_path ) ) {
         return $template_path;

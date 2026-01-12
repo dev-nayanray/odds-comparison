@@ -357,49 +357,67 @@ function oc_get_match_data( $match_id ) {
 
 /**
  * Get best odds for a match
- * 
+ *
  * @since 1.0.0
- * 
+ *
  * @param array|int $odds Array of odds data or match ID
  * @return array Best odds
  */
 function oc_get_best_odds( $odds = array() ) {
     $best = array(
-        'home'   => array( 'odds' => 0, 'bookmaker_id' => 0 ),
-        'draw'   => array( 'odds' => 0, 'bookmaker_id' => 0 ),
-        'away'   => array( 'odds' => 0, 'bookmaker_id' => 0 ),
+        'home'   => array( 'odds' => 0, 'bookmaker_id' => 0, 'bookmaker_name' => '' ),
+        'draw'   => array( 'odds' => 0, 'bookmaker_id' => 0, 'bookmaker_name' => '' ),
+        'away'   => array( 'odds' => 0, 'bookmaker_id' => 0, 'bookmaker_name' => '' ),
     );
-    
+
     // If $odds is a match ID, fetch the odds data
     if ( is_numeric( $odds ) ) {
         $odds = oc_get_match_odds( absint( $odds ) );
     }
-    
+
     if ( empty( $odds ) || ! is_array( $odds ) ) {
         return $best;
     }
-    
+
     foreach ( $odds as $odd ) {
         if ( ! empty( $odd['odds_home'] ) && (float) $odd['odds_home'] > $best['home']['odds'] ) {
+            $bookmaker_name = '';
+            if ( ! empty( $odd['bookmaker_id'] ) ) {
+                $bookmaker = get_post( $odd['bookmaker_id'] );
+                $bookmaker_name = $bookmaker ? $bookmaker->post_title : '';
+            }
             $best['home'] = array(
-                'odds'         => (float) $odd['odds_home'],
-                'bookmaker_id' => $odd['bookmaker_id'],
+                'odds'           => (float) $odd['odds_home'],
+                'bookmaker_id'   => $odd['bookmaker_id'],
+                'bookmaker_name' => $bookmaker_name,
             );
         }
         if ( ! empty( $odd['odds_draw'] ) && (float) $odd['odds_draw'] > $best['draw']['odds'] ) {
+            $bookmaker_name = '';
+            if ( ! empty( $odd['bookmaker_id'] ) ) {
+                $bookmaker = get_post( $odd['bookmaker_id'] );
+                $bookmaker_name = $bookmaker ? $bookmaker->post_title : '';
+            }
             $best['draw'] = array(
-                'odds'         => (float) $odd['odds_draw'],
-                'bookmaker_id' => $odd['bookmaker_id'],
+                'odds'           => (float) $odd['odds_draw'],
+                'bookmaker_id'   => $odd['bookmaker_id'],
+                'bookmaker_name' => $bookmaker_name,
             );
         }
         if ( ! empty( $odd['odds_away'] ) && (float) $odd['odds_away'] > $best['away']['odds'] ) {
+            $bookmaker_name = '';
+            if ( ! empty( $odd['bookmaker_id'] ) ) {
+                $bookmaker = get_post( $odd['bookmaker_id'] );
+                $bookmaker_name = $bookmaker ? $bookmaker->post_title : '';
+            }
             $best['away'] = array(
-                'odds'         => (float) $odd['odds_away'],
-                'bookmaker_id' => $odd['bookmaker_id'],
+                'odds'           => (float) $odd['odds_away'],
+                'bookmaker_id'   => $odd['bookmaker_id'],
+                'bookmaker_name' => $bookmaker_name,
             );
         }
     }
-    
+
     return $best;
 }
 

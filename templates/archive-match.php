@@ -150,7 +150,7 @@ $matches_query = new WP_Query( $args );
 
                 <div class="oc-odds-summary">
                     <?php foreach ( array( 'home' => '1', 'draw' => 'X', 'away' => '2' ) as $key => $label ) : ?>
-                        <div class="oc-odds-box">
+                        <button class="oc-odds-btn" data-odds="<?php echo esc_attr( isset( $best_odds[ $key ]['odds'] ) ? $best_odds[ $key ]['odds'] : 0 ); ?>" data-selection="<?php echo esc_attr( $label ); ?>" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( isset( $best_odds[ $key ]['bookmaker_id'] ) ? $best_odds[ $key ]['bookmaker_id'] : 1 ); ?>" data-bookmaker-name="<?php echo esc_attr( isset( $best_odds[ $key ]['bookmaker_name'] ) ? $best_odds[ $key ]['bookmaker_name'] : 'Unknown' ); ?>">
                             <span><?php echo esc_html( $label ); ?></span>
                             <strong>
                                 <?php
@@ -159,7 +159,7 @@ $matches_query = new WP_Query( $args );
                                     : '-';
                                 ?>
                             </strong>
-                        </div>
+                        </button>
                     <?php endforeach; ?>
                 </div>
 

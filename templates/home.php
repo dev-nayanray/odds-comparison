@@ -14,38 +14,80 @@
 get_header(); ?>
 
 <div class="oc-homepage-layout">
+    <!-- Mobile: Main Content First, Sidebar Second -->
     <!-- Main Content Area -->
     <main class="oc-main-content">
         
         <!-- Banner Slider -->
         <section class="oc-banner-section">
             <div class="oc-banner-slider">
-                <div class="oc-banner-slide active">
+                <?php
+                $options = get_option( 'oc_theme_options' );
+                $banners = array();
+
+                // Collect banner data
+                for ( $i = 1; $i <= 3; $i++ ) {
+                    $banner = array(
+                        'title' => isset( $options["banner_{$i}_title"] ) ? $options["banner_{$i}_title"] : '',
+                        'description' => isset( $options["banner_{$i}_description"] ) ? $options["banner_{$i}_description"] : '',
+                        'button_text' => isset( $options["banner_{$i}_button_text"] ) ? $options["banner_{$i}_button_text"] : '',
+                        'button_url' => isset( $options["banner_{$i}_button_url"] ) ? $options["banner_{$i}_button_url"] : '',
+                        'image' => isset( $options["banner_{$i}_image"] ) ? $options["banner_{$i}_image"] : '',
+                    );
+
+                    // Only add banner if it has content
+                    if ( ! empty( $banner['title'] ) || ! empty( $banner['description'] ) ) {
+                        $banners[] = $banner;
+                    }
+                }
+
+                // If no banners configured, show default
+                if ( empty( $banners ) ) {
+                    $banners[] = array(
+                        'title' => __( 'Compara las Mejores Cuotas', 'odds-comparison' ),
+                        'description' => __( 'Encuentra las cuotas más altas de las casas de apuestas confiables.', 'odds-comparison' ),
+                        'button_text' => __( 'Ver Casas de Apuestas', 'odds-comparison' ),
+                        'button_url' => get_post_type_archive_link( 'operator' ),
+                        'image' => '',
+                    );
+                }
+
+                foreach ( $banners as $index => $banner ) :
+                    $is_active = $index === 0 ? 'active' : '';
+                ?>
+                <div class="oc-banner-slide <?php echo esc_attr( $is_active ); ?>">
                     <div class="oc-banner-content">
                         <span class="oc-banner-badge"><?php esc_html_e( 'Nuevo', 'odds-comparison' ); ?></span>
-                        <h2><?php esc_html_e( 'Compara las Mejores Cuotas', 'odds-comparison' ); ?></h2>
-                        <p><?php esc_html_e( 'Encuentra las cuotas más altas de las casas de apuestas confiables.', 'odds-comparison' ); ?></p>
-                        <a href="<?php echo esc_url( get_post_type_archive_link( 'operator' ) ); ?>" class="oc-btn oc-btn-primary">
-                            <?php esc_html_e( 'Ver Casas de Apuestas', 'odds-comparison' ); ?>
-                        </a>
+                        <h2><?php echo esc_html( $banner['title'] ); ?></h2>
+                        <p><?php echo esc_html( $banner['description'] ); ?></p>
+                        <?php if ( ! empty( $banner['button_text'] ) && ! empty( $banner['button_url'] ) ) : ?>
+                            <a href="<?php echo esc_url( $banner['button_url'] ); ?>" class="oc-btn oc-btn-primary">
+                                <?php echo esc_html( $banner['button_text'] ); ?>
+                            </a>
+                        <?php endif; ?>
                     </div>
                     <div class="oc-banner-image">
-                        <div class="oc-banner-placeholder">
-                            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                                <path d="M4 11a9 9 0 0 1 9 9"></path>
-                                <path d="M4 4a16 16 0 0 1 16 16"></path>
-                                <circle cx="5" cy="19" r="1"></circle>
-                            </svg>
-                        </div>
+                        <?php if ( ! empty( $banner['image'] ) ) : ?>
+                            <img src="<?php echo esc_url( $banner['image'] ); ?>" alt="<?php echo esc_attr( $banner['title'] ); ?>" class="oc-banner-img">
+                        <?php else : ?>
+                            <div class="oc-banner-placeholder">
+                                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                                    <path d="M4 11a9 9 0 0 1 9 9"></path>
+                                    <path d="M4 4a16 16 0 0 1 16 16"></path>
+                                    <circle cx="5" cy="19" r="1"></circle>
+                                </svg>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
+                <?php endforeach; ?>
             </div>
-            
+
             <!-- Slider Controls -->
             <div class="oc-slider-controls">
-                <button class="oc-slider-dot active" data-slide="0"></button>
-                <button class="oc-slider-dot" data-slide="1"></button>
-                <button class="oc-slider-dot" data-slide="2"></button>
+                <?php for ( $i = 0; $i < count( $banners ); $i++ ) : ?>
+                    <button class="oc-slider-dot <?php echo $i === 0 ? 'active' : ''; ?>" data-slide="<?php echo esc_attr( $i ); ?>"></button>
+                <?php endfor; ?>
             </div>
         </section>
         
@@ -88,10 +130,10 @@ get_header(); ?>
 
                         // Fallback to default logos if not found
                         if ( empty( $home_team_logo ) ) {
-                            $home_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                            $home_team_logo = get_template_directory_uri() . '/assets/images/teams/default.png';
                         }
                         if ( empty( $away_team_logo ) ) {
-                            $away_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                            $away_team_logo = get_template_directory_uri() . '/assets/images/teams/default.png';
                         }
                         ?>
                         <article class="oc-match-card-horizontal">
@@ -120,15 +162,15 @@ get_header(); ?>
                             </div>
 
                             <div class="oc-match-odds-compact">
-                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['home']['odds'] ); ?>" data-type="home" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['home']['odds'] ); ?>" data-selection="1" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $best_odds['home']['bookmaker_id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $best_odds['home']['bookmaker_name'] ); ?>">
                                     <span class="oc-odd-label">1</span>
                                     <span class="oc-odd-value"><?php echo $best_odds['home']['odds'] ? esc_html( number_format( $best_odds['home']['odds'], 2 ) ) : '-'; ?></span>
                                 </button>
-                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['draw']['odds'] ); ?>" data-type="draw" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['draw']['odds'] ); ?>" data-selection="X" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $best_odds['draw']['bookmaker_id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $best_odds['draw']['bookmaker_name'] ); ?>">
                                     <span class="oc-odd-label">X</span>
                                     <span class="oc-odd-value"><?php echo $best_odds['draw']['odds'] ? esc_html( number_format( $best_odds['draw']['odds'], 2 ) ) : '-'; ?></span>
                                 </button>
-                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['away']['odds'] ); ?>" data-type="away" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['away']['odds'] ); ?>" data-selection="2" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $best_odds['away']['bookmaker_id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $best_odds['away']['bookmaker_name'] ); ?>">
                                     <span class="oc-odd-label">2</span>
                                     <span class="oc-odd-value"><?php echo $best_odds['away']['odds'] ? esc_html( number_format( $best_odds['away']['odds'], 2 ) ) : '-'; ?></span>
                                 </button>
@@ -201,10 +243,10 @@ get_header(); ?>
 
                         // Fallback to default logos if not found
                         if ( empty( $home_team_logo ) ) {
-                            $home_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                            $home_team_logo = get_template_directory_uri() . '/assets/images/teams/default.png';
                         }
                         if ( empty( $away_team_logo ) ) {
-                            $away_team_logo = OC_ASSETS_URI . '/images/teams/default.png';
+                            $away_team_logo = get_template_directory_uri() . '/assets/images/teams/default.png';
                         }
                         ?>
                         <article class="oc-match-card-horizontal">
@@ -233,15 +275,15 @@ get_header(); ?>
                             </div>
 
                             <div class="oc-match-odds-compact">
-                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['home']['odds'] ); ?>" data-type="home" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['home']['odds'] ); ?>" data-selection="1" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $best_odds['home']['bookmaker_id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $best_odds['home']['bookmaker_name'] ); ?>">
                                     <span class="oc-odd-label">1</span>
                                     <span class="oc-odd-value"><?php echo $best_odds['home']['odds'] ? esc_html( number_format( $best_odds['home']['odds'], 2 ) ) : '-'; ?></span>
                                 </button>
-                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['draw']['odds'] ); ?>" data-type="draw" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['draw']['odds'] ); ?>" data-selection="X" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $best_odds['draw']['bookmaker_id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $best_odds['draw']['bookmaker_name'] ); ?>">
                                     <span class="oc-odd-label">X</span>
                                     <span class="oc-odd-value"><?php echo $best_odds['draw']['odds'] ? esc_html( number_format( $best_odds['draw']['odds'], 2 ) ) : '-'; ?></span>
                                 </button>
-                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['away']['odds'] ); ?>" data-type="away" data-match="<?php echo esc_attr( $match_id ); ?>">
+                                <button class="oc-odd-btn-compact" data-odds="<?php echo esc_attr( $best_odds['away']['odds'] ); ?>" data-selection="2" data-match-id="<?php echo esc_attr( $match_id ); ?>" data-bookmaker-id="<?php echo esc_attr( $best_odds['away']['bookmaker_id'] ); ?>" data-bookmaker-name="<?php echo esc_attr( $best_odds['away']['bookmaker_name'] ); ?>">
                                     <span class="oc-odd-label">2</span>
                                     <span class="oc-odd-value"><?php echo $best_odds['away']['odds'] ? esc_html( number_format( $best_odds['away']['odds'], 2 ) ) : '-'; ?></span>
                                 </button>

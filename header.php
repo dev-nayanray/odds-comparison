@@ -33,9 +33,9 @@ $quota_notifications = 4; // Dynamic value - could be from transient/option
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
 
     <!-- Favicons -->
-    <link rel="icon" href="<?php echo esc_url( OC_ASSETS_URI . '/images/favicon.ico' ); ?>" sizes="32x32">
-    <link rel="icon" href="<?php echo esc_url( OC_ASSETS_URI . '/images/favicon.svg' ); ?>" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="<?php echo esc_url( OC_ASSETS_URI . '/images/apple-touch-icon.png' ); ?>">
+    <link rel="icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon.ico' ); ?>" sizes="32x32">
+    <link rel="icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/favicon.svg' ); ?>" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/apple-touch-icon.png' ); ?>">
 </head>
 
 <body <?php body_class(); ?>>
@@ -147,7 +147,7 @@ do_action( 'oc_before_site_wrapper' );
                 <!-- User Actions -->
                 <div class="oc-user-actions">
                     <!-- Login Button -->
-                    <a href="<?php echo esc_url( wp_login_url() ); ?>" class="oc-login-btn">
+                    <a href="<?php echo esc_url( get_permalink( get_page_by_path( 'login' ) ) ); ?>" class="oc-login-btn">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
                             <polyline points="10 17 15 12 10 7"></polyline>
@@ -200,7 +200,7 @@ do_action( 'oc_before_site_wrapper' );
     ?>
 
     <!-- Coupon Popup Modal -->
-    <div id="oc-coupon-popup" class="oc-coupon-popup-overlay" style="display: none;">
+    <div id="oc-coupon-popup" class="oc-coupon-popup-overlay" style=" ">
         <div class="oc-coupon-popup">
             <div class="oc-coupon-header">
                 <div class="oc-coupon-title">
@@ -216,39 +216,21 @@ do_action( 'oc_before_site_wrapper' );
             </div>
 
             <div class="oc-coupon-content">
+                <!-- Empty State -->
+                <div class="oc-coupon-empty">
+                    <div class="oc-empty-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 2v20l3-2 3 2 3-2 3 2 3-2 3 2V2l-3 2-3-2-3 2-3-2-3 2-3-2z"></path>
+                            <line x1="4" y1="10" x2="20" y2="10"></line>
+                        </svg>
+                    </div>
+                    <h3><?php esc_html_e( 'Your coupon is empty', 'odds-comparison' ); ?></h3>
+                    <p><?php esc_html_e( 'Add some bets to get started', 'odds-comparison' ); ?></p>
+                </div>
+
                 <!-- Current Bets -->
-                <div class="oc-coupon-bets">
-                    <div class="oc-coupon-bet-item">
-                        <div class="oc-bet-info">
-                            <span class="oc-bet-type"><?php esc_html_e( 'Bet', 'odds-comparison' ); ?></span>
-                            <span class="oc-bet-match"><?php esc_html_e( 'Draw', 'odds-comparison' ); ?> - <?php esc_html_e( 'Atlético Madrid v Real Madrid', 'odds-comparison' ); ?></span>
-                        </div>
-                        <div class="oc-bet-odds">1.85</div>
-                    </div>
-
-                    <div class="oc-coupon-bet-item">
-                        <div class="oc-bet-info">
-                            <span class="oc-bet-type"><?php esc_html_e( 'Winner', 'odds-comparison' ); ?></span>
-                            <span class="oc-bet-match"><?php esc_html_e( 'Olympique Marseille', 'odds-comparison' ); ?> - <?php esc_html_e( 'PSG v Olympique Marseille', 'odds-comparison' ); ?></span>
-                        </div>
-                        <div class="oc-bet-odds">2.10</div>
-                    </div>
-
-                    <div class="oc-coupon-bet-item">
-                        <div class="oc-bet-info">
-                            <span class="oc-bet-type"><?php esc_html_e( 'Winner', 'odds-comparison' ); ?></span>
-                            <span class="oc-bet-match"><?php esc_html_e( 'Real Sociedad', 'odds-comparison' ); ?> - <?php esc_html_e( 'Getafe v Real Sociedad', 'odds-comparison' ); ?></span>
-                        </div>
-                        <div class="oc-bet-odds">1.95</div>
-                    </div>
-
-                    <div class="oc-coupon-bet-item">
-                        <div class="oc-bet-info">
-                            <span class="oc-bet-type"><?php esc_html_e( 'Handicap', 'odds-comparison' ); ?></span>
-                            <span class="oc-bet-match"><?php esc_html_e( 'Atlético Madrid', 'odds-comparison' ); ?> - <?php esc_html_e( 'Atlético Madrid v Real Madrid', 'odds-comparison' ); ?></span>
-                        </div>
-                        <div class="oc-bet-odds">1.75</div>
-                    </div>
+                <div class="oc-coupon-bets" style="display: none;">
+                    <!-- Dynamic content will be inserted here -->
                 </div>
 
                 <!-- Bookmaker Options -->
@@ -256,7 +238,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option oc-current-bookmaker">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/luckia-logo.png' ); ?>" alt="Luckia" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/luckia-logo.png' ); ?>" alt="Luckia" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Luckia', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -274,7 +256,7 @@ do_action( 'oc_before_site_wrapper' );
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
                                 <span class="oc-bet-alternative"><?php esc_html_e( 'Bet with another Bookmaker', 'odds-comparison' ); ?>:</span>
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/casumo-logo.png' ); ?>" alt="Casumo Sports Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/casumo-logo.png' ); ?>" alt="Casumo Sports Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Casumo Sports Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -291,7 +273,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/yosports-logo.png' ); ?>" alt="YoSports Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/yosports-logo.png' ); ?>" alt="YoSports Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'YoSports Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -308,7 +290,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/gran-madrid-logo.png' ); ?>" alt="Casino Gran Madrid Sportsbook Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/gran-madrid-logo.png' ); ?>" alt="Casino Gran Madrid Sportsbook Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Casino Gran Madrid Sportsbook Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -325,7 +307,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/tonybet-logo.png' ); ?>" alt="TonyBet Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/tonybet-logo.png' ); ?>" alt="TonyBet Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'TonyBet Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -342,7 +324,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/1xbet-logo.png' ); ?>" alt="1xBet Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/1xbet-logo.png' ); ?>" alt="1xBet Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( '1xBet Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -359,7 +341,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/jokerbet-logo.png' ); ?>" alt="Jokerbet Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/jokerbet-logo.png' ); ?>" alt="Jokerbet Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Jokerbet Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -376,7 +358,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/paston-logo.png' ); ?>" alt="Paston" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/paston-logo.png' ); ?>" alt="Paston" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Paston', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -393,7 +375,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/sportium-logo.png' ); ?>" alt="Sportium" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/sportium-logo.png' ); ?>" alt="Sportium" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Sportium', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -410,7 +392,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/brand-logo.png' ); ?>" alt="Brand" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/brand-logo.png' ); ?>" alt="Brand" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Brand', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -427,7 +409,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/retabet-logo.png' ); ?>" alt="Retabet Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/retabet-logo.png' ); ?>" alt="Retabet Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Retabet Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -444,7 +426,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/interwetten-logo.png' ); ?>" alt="Interwetten Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/interwetten-logo.png' ); ?>" alt="Interwetten Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Interwetten Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -461,7 +443,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/betway-logo.png' ); ?>" alt="Betway" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/betway-logo.png' ); ?>" alt="Betway" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Betway', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -478,7 +460,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/bet365-logo.png' ); ?>" alt="Bet365 Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/bet365-logo.png' ); ?>" alt="Bet365 Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Bet365 Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -495,7 +477,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/bwin-logo.png' ); ?>" alt="Bwin Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/bwin-logo.png' ); ?>" alt="Bwin Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Bwin Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -512,7 +494,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/888-logo.png' ); ?>" alt="888 Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/888-logo.png' ); ?>" alt="888 Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( '888 Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -529,7 +511,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/william-hill-logo.png' ); ?>" alt="William Hill" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/william-hill-logo.png' ); ?>" alt="William Hill" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'William Hill', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -546,7 +528,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/betfair-sportsbook-logo.png' ); ?>" alt="Betfair Sportsbook Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/betfair-sportsbook-logo.png' ); ?>" alt="Betfair Sportsbook Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Betfair Sportsbook Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -563,7 +545,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/codere-logo.png' ); ?>" alt="Codere Sportsbook Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/codere-logo.png' ); ?>" alt="Codere Sportsbook Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Codere Sportsbook Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -580,7 +562,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/olybet-logo.png' ); ?>" alt="Olybet Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/olybet-logo.png' ); ?>" alt="Olybet Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Olybet Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">
@@ -597,7 +579,7 @@ do_action( 'oc_before_site_wrapper' );
                     <div class="oc-bookmaker-option">
                         <div class="oc-bookmaker-header">
                             <div class="oc-bookmaker-info">
-                                <img src="<?php echo esc_url( OC_ASSETS_URI . '/images/bookmakers/betfair-logo.png' ); ?>" alt="Betfair Spain" class="oc-bookmaker-logo">
+                                <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/bookmakers/betfair-logo.png' ); ?>" alt="Betfair Spain" class="oc-bookmaker-logo">
                                 <div class="oc-bookmaker-details">
                                     <span class="oc-bookmaker-name"><?php esc_html_e( 'Betfair Spain', 'odds-comparison' ); ?></span>
                                     <div class="oc-bet-calculation">

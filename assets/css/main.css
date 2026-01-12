@@ -1,0 +1,338 @@
+/* Odds Comparison Main Styles */
+
+/* Base Styles */
+.oc-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.oc-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #27ae60;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.oc-button:hover {
+    background: #219a52;
+    color: white;
+    text-decoration: none;
+}
+
+.oc-button.secondary {
+    background: #6c757d;
+}
+
+.oc-button.secondary:hover {
+    background: #545b62;
+}
+
+.oc-button.small {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+/* Stars Rating */
+.oc-stars {
+    display: flex;
+    gap: 2px;
+    align-items: center;
+}
+
+.oc-stars .star {
+    color: #ddd;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.oc-stars .star.filled {
+    color: #ffd700;
+}
+
+.oc-rating-value {
+    font-weight: bold;
+    color: #333;
+    margin-left: 8px;
+}
+
+.oc-review-count {
+    color: #666;
+    font-size: 14px;
+    margin-left: 8px;
+}
+
+/* Cards */
+.oc-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.oc-card-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.oc-card-body {
+    padding: 20px;
+}
+
+.oc-card-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+}
+
+/* Forms */
+.oc-form-group {
+    margin-bottom: 20px;
+}
+
+.oc-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.oc-form-group input,
+.oc-form-group select,
+.oc-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.oc-form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Grid Layouts */
+.oc-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.oc-grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.oc-grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.oc-grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Flex Utilities */
+.oc-flex {
+    display: flex;
+    gap: 15px;
+}
+
+.oc-flex-center {
+    align-items: center;
+}
+
+.oc-flex-between {
+    justify-content: space-between;
+}
+
+.oc-flex-wrap {
+    flex-wrap: wrap;
+}
+
+/* Spacing */
+.oc-mb-1 { margin-bottom: 0.25rem; }
+.oc-mb-2 { margin-bottom: 0.5rem; }
+.oc-mb-3 { margin-bottom: 1rem; }
+.oc-mb-4 { margin-bottom: 1.5rem; }
+.oc-mb-5 { margin-bottom: 3rem; }
+
+.oc-mt-1 { margin-top: 0.25rem; }
+.oc-mt-2 { margin-top: 0.5rem; }
+.oc-mt-3 { margin-top: 1rem; }
+.oc-mt-4 { margin-top: 1.5rem; }
+.oc-mt-5 { margin-top: 3rem; }
+
+/* Text Utilities */
+.oc-text-center { text-align: center; }
+.oc-text-left { text-align: left; }
+.oc-text-right { text-align: right; }
+
+.oc-text-muted { color: #6c757d; }
+.oc-text-success { color: #28a745; }
+.oc-text-warning { color: #ffc107; }
+.oc-text-danger { color: #dc3545; }
+.oc-text-info { color: #17a2b8; }
+
+/* Background Colors */
+.oc-bg-light { background-color: #f8f9fa; }
+.oc-bg-white { background-color: white; }
+.oc-bg-primary { background-color: #007bff; color: white; }
+.oc-bg-success { background-color: #28a745; color: white; }
+.oc-bg-warning { background-color: #ffc107; color: black; }
+.oc-bg-danger { background-color: #dc3545; color: white; }
+
+/* Borders */
+.oc-border { border: 1px solid #dee2e6; }
+.oc-border-top { border-top: 1px solid #dee2e6; }
+.oc-border-bottom { border-bottom: 1px solid #dee2e6; }
+.oc-border-left { border-left: 1px solid #dee2e6; }
+.oc-border-right { border-right: 1px solid #dee2e6; }
+
+.oc-rounded { border-radius: 5px; }
+.oc-rounded-circle { border-radius: 50%; }
+
+/* Display Utilities */
+.oc-d-none { display: none; }
+.oc-d-block { display: block; }
+.oc-d-inline { display: inline; }
+.oc-d-inline-block { display: inline-block; }
+.oc-d-flex { display: flex; }
+
+/* Position Utilities */
+.oc-position-relative { position: relative; }
+.oc-position-absolute { position: absolute; }
+.oc-position-fixed { position: fixed; }
+.oc-position-sticky { position: sticky; }
+
+/* Width/Height Utilities */
+.oc-w-100 { width: 100%; }
+.oc-h-100 { height: 100%; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .oc-container {
+        padding: 0 15px;
+    }
+
+    .oc-grid-2,
+    .oc-grid-3,
+    .oc-grid-4 {
+        grid-template-columns: 1fr;
+    }
+
+    .oc-flex {
+        flex-direction: column;
+    }
+
+    .oc-button {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Loading States */
+.oc-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.oc-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: oc-spin 1s linear infinite;
+}
+
+@keyframes oc-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animations */
+.oc-fade-in {
+    animation: oc-fade-in 0.3s ease-in;
+}
+
+@keyframes oc-fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.oc-slide-up {
+    animation: oc-slide-up 0.3s ease-out;
+}
+
+@keyframes oc-slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Focus States */
+.oc-form-group input:focus,
+.oc-form-group select:focus,
+.oc-form-group textarea:focus {
+    outline: none;
+    border-color: #27ae60;
+    box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.25);
+}
+
+/* Error States */
+.oc-form-group.error input,
+.oc-form-group.error select,
+.oc-form-group.error textarea {
+    border-color: #dc3545;
+}
+
+.oc-error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Success States */
+.oc-form-group.success input,
+.oc-form-group.success select,
+.oc-form-group.success textarea {
+    border-color: #28a745;
+}
+
+/* Accessibility */
+.oc-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Print Styles */
+@media print {
+    .oc-button,
+    .oc-card-footer {
+        display: none !important;
+    }
+
+    .oc-container {
+        max-width: none;
+        padding: 0;
+    }
+}

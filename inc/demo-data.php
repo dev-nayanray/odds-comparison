@@ -449,7 +449,7 @@ function oc_import_demo_operators() {
  * @return int Number of matches imported
  */
 function oc_import_demo_matches() {
-    // Get team IDs
+    // Get team IDs with null checks
     $teams = array(
         'man-city' => get_term_by( 'slug', 'man-city', 'team' ),
         'liverpool' => get_term_by( 'slug', 'liverpool', 'team' ),
@@ -475,9 +475,24 @@ function oc_import_demo_matches() {
     // Get sport ID
     $football = get_term_by( 'slug', 'football', 'sport' );
     
+    // Helper function to get term name safely
+    $get_term_name = function( $term ) {
+        return ( $term && isset( $term->name ) ) ? $term->name : '';
+    };
+    
+    // Helper function to get term ID safely
+    $get_term_id = function( $term ) {
+        return ( $term && isset( $term->term_id ) ) ? $term->term_id : 0;
+    };
+    
+    // Helper function to get term slug safely
+    $get_term_slug = function( $term ) {
+        return ( $term && isset( $term->slug ) ) ? $term->slug : '';
+    };
+    
     $matches = array(
         array(
-            'title' => sprintf( '%s vs %s', $teams['man-city']->name, $teams['liverpool']->name ),
+            'title' => sprintf( '%s vs %s', $get_term_name( $teams['man-city'] ), $get_term_name( $teams['liverpool'] ) ),
             'home_team' => $teams['man-city'],
             'away_team' => $teams['liverpool'],
             'league' => $premier_league,
@@ -488,7 +503,7 @@ function oc_import_demo_matches() {
             'stadium' => 'Etihad Stadium, Manchester',
         ),
         array(
-            'title' => sprintf( '%s vs %s', $teams['arsenal']->name, $teams['man-utd']->name ),
+            'title' => sprintf( '%s vs %s', $get_term_name( $teams['arsenal'] ), $get_term_name( $teams['man-utd'] ) ),
             'home_team' => $teams['arsenal'],
             'away_team' => $teams['man-utd'],
             'league' => $premier_league,
@@ -499,7 +514,7 @@ function oc_import_demo_matches() {
             'stadium' => 'Emirates Stadium, London',
         ),
         array(
-            'title' => sprintf( '%s vs %s', $teams['real-madrid']->name, $teams['barcelona']->name ),
+            'title' => sprintf( '%s vs %s', $get_term_name( $teams['real-madrid'] ), $get_term_name( $teams['barcelona'] ) ),
             'home_team' => $teams['real-madrid'],
             'away_team' => $teams['barcelona'],
             'league' => $champions_league,
@@ -510,7 +525,7 @@ function oc_import_demo_matches() {
             'stadium' => 'Santiago Bernabéu, Madrid',
         ),
         array(
-            'title' => sprintf( '%s vs %s', $teams['bayern-munich']->name, $teams['dortmund']->name ),
+            'title' => sprintf( '%s vs %s', $get_term_name( $teams['bayern-munich'] ), $get_term_name( $teams['dortmund'] ) ),
             'home_team' => $teams['bayern-munich'],
             'away_team' => $teams['dortmund'],
             'league' => $bundesliga,
@@ -521,7 +536,7 @@ function oc_import_demo_matches() {
             'stadium' => 'Allianz Arena, Munich',
         ),
         array(
-            'title' => sprintf( '%s vs %s', $teams['chelsea']->name, $teams['psg']->name ),
+            'title' => sprintf( '%s vs %s', $get_term_name( $teams['chelsea'] ), $get_term_name( $teams['psg'] ) ),
             'home_team' => $teams['chelsea'],
             'away_team' => $teams['psg'],
             'league' => $champions_league,
@@ -536,18 +551,27 @@ function oc_import_demo_matches() {
     $imported = 0;
     
     foreach ( $matches as $match ) {
+        // Skip if teams don't exist
+        if ( ! $match['home_team'] || ! $match['away_team'] ) {
+            continue;
+        }
+        
         $slug = sanitize_title( $match['title'] );
         $post_exists = get_page_by_path( $slug, OBJECT, 'match' );
         
-        if ( ! $post_exists && $match['home_team'] && $match['away_team'] ) {
+        if ( ! $post_exists ) {
+            $home_team_name = $get_term_name( $match['home_team'] );
+            $away_team_name = $get_term_name( $match['away_team'] );
+            $league_name = $get_term_name( $match['league'] );
+            
             $post_data = array(
                 'post_title'   => $match['title'],
                 'post_name'    => $slug,
                 'post_content' => sprintf(
                     __( '%s vs %s - Upcoming match in %s. Don\'t miss the opportunity to compare odds from the best bookmakers.', 'odds-comparison' ),
-                    $match['home_team']->name,
-                    $match['away_team']->name,
-                    $match['league']->name
+                    $home_team_name,
+                    $away_team_name,
+                    $league_name
                 ),
                 'post_status'  => 'publish',
                 'post_type'    => 'match',
@@ -557,19 +581,23 @@ function oc_import_demo_matches() {
             $post_id = wp_insert_post( $post_data );
             
             if ( $post_id ) {
-                // Set taxonomies
-                wp_set_object_terms( $post_id, $match['sport']->term_id, 'sport' );
-                wp_set_object_terms( $post_id, $match['league']->term_id, 'league' );
-                wp_set_object_terms( $post_id, array( $match['home_team']->term_id, $match['away_team']->term_id ), 'team' );
+                // Set taxonomies safely
+                if ( $match['sport'] ) {
+                    wp_set_object_terms( $post_id, $get_term_id( $match['sport'] ), 'sport' );
+                }
+                if ( $match['league'] ) {
+                    wp_set_object_terms( $post_id, $get_term_id( $match['league'] ), 'league' );
+                }
+                wp_set_object_terms( $post_id, array( $get_term_id( $match['home_team'] ), $get_term_id( $match['away_team'] ) ), 'team' );
                 
-                // Set meta
+                // Set meta with safe values
                 update_post_meta( $post_id, 'oc_match_date', $match['date'] );
                 update_post_meta( $post_id, 'oc_match_time', $match['time'] );
                 update_post_meta( $post_id, 'oc_match_status', $match['status'] );
-                update_post_meta( $post_id, 'oc_match_league', $match['league']->name );
+                update_post_meta( $post_id, 'oc_match_league', $league_name );
                 update_post_meta( $post_id, 'oc_match_stadium', $match['stadium'] );
-                update_post_meta( $post_id, 'oc_match_home_team', $match['home_team']->term_id );
-                update_post_meta( $post_id, 'oc_match_away_team', $match['away_team']->term_id );
+                update_post_meta( $post_id, 'oc_match_home_team', $get_term_id( $match['home_team'] ) );
+                update_post_meta( $post_id, 'oc_match_away_team', $get_term_id( $match['away_team'] ) );
                 
                 $imported++;
             }
@@ -662,7 +690,7 @@ function oc_create_required_pages() {
         'odds-comparison' => array(
             'title' => __( 'Odds Comparison', 'odds-comparison' ),
             'content' => __( 'Compare the best betting odds from top bookmakers across all upcoming matches.', 'odds-comparison' ),
-            'template' => '',
+            'template' => 'templates/page-odds-comparison.php',
         ),
         'bonuses' => array(
             'title' => __( 'Betting Bonuses', 'odds-comparison' ),

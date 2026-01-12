@@ -19,6 +19,7 @@
         initTopBarSlider();
         initQuotaDropdown();
         initMobileMenu();
+        initCoupon();
     });
 
     /**
@@ -1213,7 +1214,7 @@ function initBannerSlider() {
 // Initialize coupon functionality
 function initCoupon() {
     // Coupon button in header
-    const couponHeaderBtn = document.querySelector('.oc-coupon-header-btn');
+    const couponHeaderBtn = document.querySelector('#oc-coupon-toggle');
     if (couponHeaderBtn) {
         couponHeaderBtn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -1222,7 +1223,7 @@ function initCoupon() {
     }
 
     // Close popup handlers
-    const popupClose = document.querySelector('.oc-popup-close');
+    const popupClose = document.querySelector('.oc-coupon-close');
     const popupOverlay = document.querySelector('.oc-coupon-popup-overlay');
 
     if (popupClose) {
@@ -1258,6 +1259,67 @@ function initCoupon() {
 
     // Initialize odds buttons with click handlers
     initOddsButtons();
+
+    // Event delegation for dynamically created elements
+    initCouponEventDelegation();
+}
+
+// Event delegation for dynamically created coupon elements
+function initCouponEventDelegation() {
+    // Delegate click events for dynamically created elements
+    document.addEventListener('click', function(e) {
+        // Handle delete button clicks (dynamically created)
+        const deleteBtn = e.target.closest('.oc-bet-delete');
+        if (deleteBtn) {
+            e.preventDefault();
+            const index = parseInt(deleteBtn.dataset.index, 10);
+            if (!isNaN(index) && couponItems[index]) {
+                const item = couponItems[index];
+                removeFromCoupon(item.matchId, item.selection);
+                
+                // Remove visual selection from the match card
+                const card = document.querySelector('.oc-match-card-horizontal[data-match-id="' + item.matchId + '"]');
+                if (card) {
+                    const btn = card.querySelector('.oc-odd-btn-compact[data-selection="' + item.selection + '"]');
+                    if (btn) {
+                        btn.classList.remove('selected');
+                    }
+                }
+                
+                updateCouponUI();
+                showToast('Selection removed from coupon');
+            }
+            return;
+        }
+
+        // Handle bookmaker option card selection (dynamically created)
+        const bookmakerCard = e.target.closest('.oc-bookmaker-option-card');
+        if (bookmakerCard) {
+            const container = bookmakerCard.closest('.oc-bookmaker-options');
+            if (container) {
+                container.querySelectorAll('.oc-bookmaker-option-card').forEach(function(card) {
+                    card.classList.remove('selected');
+                });
+                bookmakerCard.classList.add('selected');
+            }
+            return;
+        }
+    });
+
+    // Delegate change events for dynamically created inputs
+    document.addEventListener('change', function(e) {
+        // Handle stake input changes (dynamically created)
+        const stakeInput = e.target.closest('.oc-stake-input');
+        if (stakeInput) {
+            const index = parseInt(stakeInput.dataset.index, 10);
+            const value = parseFloat(stakeInput.value);
+            if (!isNaN(index) && !isNaN(value) && couponItems[index]) {
+                couponItems[index].stake = value;
+                updateCouponCalculations();
+            }
+            return;
+        }
+    });
 }
 
 // Initialize odds selection buttons
@@ -1351,7 +1413,7 @@ function clearCoupon() {
 
 function updateCouponUI() {
     const emptyState = document.querySelector('.oc-coupon-empty');
-    const betItems = document.querySelector('.oc-bet-items');
+    const betItems = document.querySelector('.oc-coupon-bets');
     const badge = document.querySelector('.oc-popup-badge, .oc-coupon-badge');
     const headerCount = document.querySelector('.oc-coupon-count');
     const count = couponItems.length;
@@ -1409,6 +1471,7 @@ function openCouponPopup() {
     const overlay = document.querySelector('.oc-coupon-popup-overlay');
     if (overlay) {
         overlay.classList.add('active');
+        overlay.style.display = ''; // Remove inline display:none
         document.body.style.overflow = 'hidden';
         updateCouponUI();
     }
@@ -1418,6 +1481,7 @@ function closeCouponPopup() {
     const overlay = document.querySelector('.oc-coupon-popup-overlay');
     if (overlay) {
         overlay.classList.remove('active');
+        overlay.style.display = 'none'; // Restore inline display:none
         document.body.style.overflow = '';
     }
 }

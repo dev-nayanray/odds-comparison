@@ -954,6 +954,39 @@
     color: var(--oc-text-light);
 }
 
+/* === Homepage Layout - Mobile First === */
+.oc-homepage-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.oc-homepage-layout .oc-main-content {
+    order: 1;
+}
+
+.oc-homepage-layout .oc-sidebar-area {
+    order: 2;
+}
+
+/* Desktop Layout */
+@media (min-width: 1024px) {
+    .oc-homepage-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .oc-homepage-layout .oc-main-content {
+        order: unset;
+    }
+
+    .oc-homepage-layout .oc-sidebar-area {
+        order: unset;
+    }
+}
+
 /* === Responsive Styles === */
 @media (max-width: 768px) {
     .oc-teams {

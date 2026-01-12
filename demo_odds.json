@@ -1,0 +1,194 @@
+[
+    {
+        "match_id": 1,
+        "bookmaker_id": 1,
+        "odds_home": "3.02",
+        "odds_draw": "3.74",
+        "odds_away": "1.68",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 1,
+        "bookmaker_id": 2,
+        "odds_home": "2.54",
+        "odds_draw": "3.29",
+        "odds_away": "2.80",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 1,
+        "bookmaker_id": 3,
+        "odds_home": "2.86",
+        "odds_draw": "2.74",
+        "odds_away": "3.13",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 1,
+        "bookmaker_id": 4,
+        "odds_home": "2.67",
+        "odds_draw": "3.73",
+        "odds_away": "2.38",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 1,
+        "bookmaker_id": 5,
+        "odds_home": "1.65",
+        "odds_draw": "2.79",
+        "odds_away": "3.34",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 1,
+        "bookmaker_id": 6,
+        "odds_home": "2.43",
+        "odds_draw": "2.92",
+        "odds_away": "2.36",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 2,
+        "bookmaker_id": 1,
+        "odds_home": "1.79",
+        "odds_draw": "3.71",
+        "odds_away": "1.61",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 2,
+        "bookmaker_id": 2,
+        "odds_home": "2.73",
+        "odds_draw": "3.59",
+        "odds_away": "2.40",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 2,
+        "bookmaker_id": 3,
+        "odds_home": "1.92",
+        "odds_draw": "2.87",
+        "odds_away": "1.93",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 2,
+        "bookmaker_id": 4,
+        "odds_home": "2.67",
+        "odds_draw": "3.03",
+        "odds_away": "2.98",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 2,
+        "bookmaker_id": 5,
+        "odds_home": "2.50",
+        "odds_draw": "2.83",
+        "odds_away": "2.30",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 2,
+        "bookmaker_id": 6,
+        "odds_home": "2.29",
+        "odds_draw": "3.36",
+        "odds_away": "2.44",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 3,
+        "bookmaker_id": 1,
+        "odds_home": "1.66",
+        "odds_draw": "3.59",
+        "odds_away": "2.36",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 3,
+        "bookmaker_id": 2,
+        "odds_home": "2.68",
+        "odds_draw": "2.50",
+        "odds_away": "3.28",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 3,
+        "bookmaker_id": 3,
+        "odds_home": "2.71",
+        "odds_draw": "3.69",
+        "odds_away": "3.36",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 3,
+        "bookmaker_id": 4,
+        "odds_home": "1.67",
+        "odds_draw": "3.03",
+        "odds_away": "1.95",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 3,
+        "bookmaker_id": 5,
+        "odds_home": "2.49",
+        "odds_draw": "3.36",
+        "odds_away": "3.32",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 3,
+        "bookmaker_id": 6,
+        "odds_home": "2.85",
+        "odds_draw": "2.56",
+        "odds_away": "1.67",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 4,
+        "bookmaker_id": 1,
+        "odds_home": "2.66",
+        "odds_draw": "4.42",
+        "odds_away": "1.54",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 4,
+        "bookmaker_id": 2,
+        "odds_home": "1.56",
+        "odds_draw": "4.47",
+        "odds_away": "1.57",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 4,
+        "bookmaker_id": 3,
+        "odds_home": "3.48",
+        "odds_draw": "3.86",
+        "odds_away": "1.88",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 4,
+        "bookmaker_id": 4,
+        "odds_home": "2.36",
+        "odds_draw": "2.81",
+        "odds_away": "3.33",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 4,
+        "bookmaker_id": 5,
+        "odds_home": "3.08",
+        "odds_draw": "3.12",
+        "odds_away": "2.29",
+        "last_updated": "2026-01-11 21:57:17"
+    },
+    {
+        "match_id": 4,
+        "bookmaker_id": 6,
+        "odds_home": "2.74",
+        "odds_draw": "2.68",
+        "odds_away": "2.45",
+        "last_updated": "2026-01-11 21:57:17"
+    }
+]

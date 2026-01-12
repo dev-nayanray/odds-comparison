@@ -218,6 +218,137 @@ function oc_register_settings() {
         'oc_seo_section'
     );
     
+    // Banner Slider Section
+    add_settings_section(
+        'oc_banner_section',
+        __( 'Banner Slider', 'odds-comparison' ),
+        'oc_banner_section_callback',
+        'oc_theme_options'
+    );
+
+    // Banner 1
+    add_settings_field(
+        'banner_1_title',
+        __( 'Banner 1 Title', 'odds-comparison' ),
+        'oc_banner_1_title_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_1_description',
+        __( 'Banner 1 Description', 'odds-comparison' ),
+        'oc_banner_1_description_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_1_button_text',
+        __( 'Banner 1 Button Text', 'odds-comparison' ),
+        'oc_banner_1_button_text_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_1_button_url',
+        __( 'Banner 1 Button URL', 'odds-comparison' ),
+        'oc_banner_1_button_url_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_1_image',
+        __( 'Banner 1 Image URL', 'odds-comparison' ),
+        'oc_banner_1_image_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    // Banner 2
+    add_settings_field(
+        'banner_2_title',
+        __( 'Banner 2 Title', 'odds-comparison' ),
+        'oc_banner_2_title_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_2_description',
+        __( 'Banner 2 Description', 'odds-comparison' ),
+        'oc_banner_2_description_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_2_button_text',
+        __( 'Banner 2 Button Text', 'odds-comparison' ),
+        'oc_banner_2_button_text_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_2_button_url',
+        __( 'Banner 2 Button URL', 'odds-comparison' ),
+        'oc_banner_2_button_url_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_2_image',
+        __( 'Banner 2 Image URL', 'odds-comparison' ),
+        'oc_banner_2_image_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    // Banner 3
+    add_settings_field(
+        'banner_3_title',
+        __( 'Banner 3 Title', 'odds-comparison' ),
+        'oc_banner_3_title_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_3_description',
+        __( 'Banner 3 Description', 'odds-comparison' ),
+        'oc_banner_3_description_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_3_button_text',
+        __( 'Banner 3 Button Text', 'odds-comparison' ),
+        'oc_banner_3_button_text_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_3_button_url',
+        __( 'Banner 3 Button URL', 'odds-comparison' ),
+        'oc_banner_3_button_url_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
+    add_settings_field(
+        'banner_3_image',
+        __( 'Banner 3 Image URL', 'odds-comparison' ),
+        'oc_banner_3_image_callback',
+        'oc_theme_options',
+        'oc_banner_section'
+    );
+
     // Social Section
     add_settings_section(
         'oc_social_section',
@@ -225,7 +356,7 @@ function oc_register_settings() {
         'oc_social_section_callback',
         'oc_theme_options'
     );
-    
+
     add_settings_field(
         'social_facebook',
         __( 'Facebook URL', 'odds-comparison' ),
@@ -233,7 +364,7 @@ function oc_register_settings() {
         'oc_theme_options',
         'oc_social_section'
     );
-    
+
     add_settings_field(
         'social_twitter',
         __( 'Twitter URL', 'odds-comparison' ),
@@ -241,7 +372,7 @@ function oc_register_settings() {
         'oc_theme_options',
         'oc_social_section'
     );
-    
+
     add_settings_field(
         'social_youtube',
         __( 'YouTube URL', 'odds-comparison' ),
@@ -324,19 +455,80 @@ function oc_sanitize_settings( $input ) {
         $sanitized['home_meta_description'] = sanitize_textarea_field( $input['home_meta_description'] );
     }
     
+    // Banner settings
+    if ( isset( $input['banner_1_title'] ) ) {
+        $sanitized['banner_1_title'] = sanitize_text_field( $input['banner_1_title'] );
+    }
+
+    if ( isset( $input['banner_1_description'] ) ) {
+        $sanitized['banner_1_description'] = sanitize_textarea_field( $input['banner_1_description'] );
+    }
+
+    if ( isset( $input['banner_1_button_text'] ) ) {
+        $sanitized['banner_1_button_text'] = sanitize_text_field( $input['banner_1_button_text'] );
+    }
+
+    if ( isset( $input['banner_1_button_url'] ) ) {
+        $sanitized['banner_1_button_url'] = esc_url_raw( $input['banner_1_button_url'] );
+    }
+
+    if ( isset( $input['banner_1_image'] ) ) {
+        $sanitized['banner_1_image'] = esc_url_raw( $input['banner_1_image'] );
+    }
+
+    if ( isset( $input['banner_2_title'] ) ) {
+        $sanitized['banner_2_title'] = sanitize_text_field( $input['banner_2_title'] );
+    }
+
+    if ( isset( $input['banner_2_description'] ) ) {
+        $sanitized['banner_2_description'] = sanitize_textarea_field( $input['banner_2_description'] );
+    }
+
+    if ( isset( $input['banner_2_button_text'] ) ) {
+        $sanitized['banner_2_button_text'] = sanitize_text_field( $input['banner_2_button_text'] );
+    }
+
+    if ( isset( $input['banner_2_button_url'] ) ) {
+        $sanitized['banner_2_button_url'] = esc_url_raw( $input['banner_2_button_url'] );
+    }
+
+    if ( isset( $input['banner_2_image'] ) ) {
+        $sanitized['banner_2_image'] = esc_url_raw( $input['banner_2_image'] );
+    }
+
+    if ( isset( $input['banner_3_title'] ) ) {
+        $sanitized['banner_3_title'] = sanitize_text_field( $input['banner_3_title'] );
+    }
+
+    if ( isset( $input['banner_3_description'] ) ) {
+        $sanitized['banner_3_description'] = sanitize_textarea_field( $input['banner_3_description'] );
+    }
+
+    if ( isset( $input['banner_3_button_text'] ) ) {
+        $sanitized['banner_3_button_text'] = sanitize_text_field( $input['banner_3_button_text'] );
+    }
+
+    if ( isset( $input['banner_3_button_url'] ) ) {
+        $sanitized['banner_3_button_url'] = esc_url_raw( $input['banner_3_button_url'] );
+    }
+
+    if ( isset( $input['banner_3_image'] ) ) {
+        $sanitized['banner_3_image'] = esc_url_raw( $input['banner_3_image'] );
+    }
+
     // Social settings
     if ( isset( $input['social_facebook'] ) ) {
         $sanitized['social_facebook'] = esc_url_raw( $input['social_facebook'] );
     }
-    
+
     if ( isset( $input['social_twitter'] ) ) {
         $sanitized['social_twitter'] = esc_url_raw( $input['social_twitter'] );
     }
-    
+
     if ( isset( $input['social_youtube'] ) ) {
         $sanitized['social_youtube'] = esc_url_raw( $input['social_youtube'] );
     }
-    
+
     return $sanitized;
 }
 
@@ -1041,6 +1233,10 @@ function oc_social_section_callback() {
     echo '<p>' . esc_html__( 'Add your social media links.', 'odds-comparison' ) . '</p>';
 }
 
+function oc_banner_section_callback() {
+    echo '<p>' . esc_html__( 'Configure banner slider settings.', 'odds-comparison' ) . '</p>';
+}
+
 // Field callbacks
 function oc_logo_field_callback() {
     $options = get_option( 'oc_theme_options' );
@@ -1175,6 +1371,129 @@ function oc_social_youtube_callback() {
     $value = isset( $options['social_youtube'] ) ? $options['social_youtube'] : '';
     ?>
     <input type="url" name="oc_theme_options[social_youtube]" value="<?php echo esc_url( $value ); ?>" class="regular-text" placeholder="https://youtube.com/...">
+    <?php
+}
+
+// Banner 1 callbacks
+function oc_banner_1_title_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_1_title'] ) ? $options['banner_1_title'] : '';
+    ?>
+    <input type="text" name="oc_theme_options[banner_1_title]" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_1_description_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_1_description'] ) ? $options['banner_1_description'] : '';
+    ?>
+    <textarea name="oc_theme_options[banner_1_description]" rows="4" class="large-text"><?php echo esc_textarea( $value ); ?></textarea>
+    <?php
+}
+
+function oc_banner_1_button_text_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_1_button_text'] ) ? $options['banner_1_button_text'] : '';
+    ?>
+    <input type="text" name="oc_theme_options[banner_1_button_text]" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_1_button_url_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_1_button_url'] ) ? $options['banner_1_button_url'] : '';
+    ?>
+    <input type="url" name="oc_theme_options[banner_1_button_url]" value="<?php echo esc_url( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_1_image_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_1_image'] ) ? $options['banner_1_image'] : '';
+    ?>
+    <input type="url" name="oc_theme_options[banner_1_image]" value="<?php echo esc_url( $value ); ?>" class="regular-text">
+    <?php
+}
+
+// Banner 2 callbacks
+function oc_banner_2_title_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_2_title'] ) ? $options['banner_2_title'] : '';
+    ?>
+    <input type="text" name="oc_theme_options[banner_2_title]" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_2_description_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_2_description'] ) ? $options['banner_2_description'] : '';
+    ?>
+    <textarea name="oc_theme_options[banner_2_description]" rows="4" class="large-text"><?php echo esc_textarea( $value ); ?></textarea>
+    <?php
+}
+
+function oc_banner_2_button_text_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_2_button_text'] ) ? $options['banner_2_button_text'] : '';
+    ?>
+    <input type="text" name="oc_theme_options[banner_2_button_text]" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_2_button_url_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_2_button_url'] ) ? $options['banner_2_button_url'] : '';
+    ?>
+    <input type="url" name="oc_theme_options[banner_2_button_url]" value="<?php echo esc_url( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_2_image_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_2_image'] ) ? $options['banner_2_image'] : '';
+    ?>
+    <input type="url" name="oc_theme_options[banner_2_image]" value="<?php echo esc_url( $value ); ?>" class="regular-text">
+    <?php
+}
+
+// Banner 3 callbacks
+function oc_banner_3_title_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_3_title'] ) ? $options['banner_3_title'] : '';
+    ?>
+    <input type="text" name="oc_theme_options[banner_3_title]" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_3_description_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_3_description'] ) ? $options['banner_3_description'] : '';
+    ?>
+    <textarea name="oc_theme_options[banner_3_description]" rows="4" class="large-text"><?php echo esc_textarea( $value ); ?></textarea>
+    <?php
+}
+
+function oc_banner_3_button_text_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_3_button_text'] ) ? $options['banner_3_button_text'] : '';
+    ?>
+    <input type="text" name="oc_theme_options[banner_3_button_text]" value="<?php echo esc_attr( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_3_button_url_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_3_button_url'] ) ? $options['banner_3_button_url'] : '';
+    ?>
+    <input type="url" name="oc_theme_options[banner_3_button_url]" value="<?php echo esc_url( $value ); ?>" class="regular-text">
+    <?php
+}
+
+function oc_banner_3_image_callback() {
+    $options = get_option( 'oc_theme_options' );
+    $value = isset( $options['banner_3_image'] ) ? $options['banner_3_image'] : '';
+    ?>
+    <input type="url" name="oc_theme_options[banner_3_image]" value="<?php echo esc_url( $value ); ?>" class="regular-text">
     <?php
 }
 

@@ -1,0 +1,179 @@
+{
+    "sports": [
+        {
+            "id": 1,
+            "name": "Football",
+            "slug": "football"
+        },
+        {
+            "id": 2,
+            "name": "Basketball",
+            "slug": "basketball"
+        },
+        {
+            "id": 3,
+            "name": "Tennis",
+            "slug": "tennis"
+        }
+    ],
+    "leagues": [
+        {
+            "id": 1,
+            "name": "Premier League",
+            "slug": "premier-league",
+            "sport_id": 1
+        },
+        {
+            "id": 2,
+            "name": "La Liga",
+            "slug": "la-liga",
+            "sport_id": 1
+        },
+        {
+            "id": 3,
+            "name": "NBA",
+            "slug": "nba",
+            "sport_id": 2
+        },
+        {
+            "id": 4,
+            "name": "UEFA Champions League",
+            "slug": "champions-league",
+            "sport_id": 1
+        }
+    ],
+    "teams": [
+        {
+            "id": 1,
+            "name": "Manchester City",
+            "slug": "man-city",
+            "short_name": "MCI"
+        },
+        {
+            "id": 2,
+            "name": "Liverpool",
+            "slug": "liverpool",
+            "short_name": "LIV"
+        },
+        {
+            "id": 3,
+            "name": "Arsenal",
+            "slug": "arsenal",
+            "short_name": "ARS"
+        },
+        {
+            "id": 4,
+            "name": "Real Madrid",
+            "slug": "real-madrid",
+            "short_name": "RMA"
+        },
+        {
+            "id": 5,
+            "name": "Barcelona",
+            "slug": "barcelona",
+            "short_name": "FCB"
+        },
+        {
+            "id": 6,
+            "name": "Bayern Munich",
+            "slug": "bayern-munich",
+            "short_name": "BAY"
+        },
+        {
+            "id": 7,
+            "name": "PSG",
+            "slug": "psg",
+            "short_name": "PSG"
+        }
+    ],
+    "operators": [
+        {
+            "id": 1,
+            "name": "Bet365",
+            "rating": 4.8,
+            "bonus": "100% up to \u20ac100",
+            "affiliate_url": "https:\/\/www.bet365.com\/"
+        },
+        {
+            "id": 2,
+            "name": "Betway",
+            "rating": 4.5,
+            "bonus": "100% up to \u20ac200",
+            "affiliate_url": "https:\/\/www.betway.com\/"
+        },
+        {
+            "id": 3,
+            "name": "888sport",
+            "rating": 4.3,
+            "bonus": "100% up to \u20ac150",
+            "affiliate_url": "https:\/\/www.888sport.com\/"
+        },
+        {
+            "id": 4,
+            "name": "Unibet",
+            "rating": 4.4,
+            "bonus": "\u20ac30 Free Bet",
+            "affiliate_url": "https:\/\/www.unibet.com\/"
+        },
+        {
+            "id": 5,
+            "name": "Pinnacle",
+            "rating": 4.6,
+            "bonus": "Welcome Bonus",
+            "affiliate_url": "https:\/\/www.pinnacle.com\/"
+        },
+        {
+            "id": 6,
+            "name": "Bwin",
+            "rating": 4.2,
+            "bonus": "100% up to \u20ac100",
+            "affiliate_url": "https:\/\/www.bwin.com\/"
+        }
+    ],
+    "matches": [
+        {
+            "id": 1,
+            "title": "Manchester City vs Liverpool",
+            "home_team_id": 1,
+            "away_team_id": 2,
+            "league_id": 1,
+            "date": "2026-01-12",
+            "time": "20:00",
+            "is_live": false,
+            "is_featured": true
+        },
+        {
+            "id": 2,
+            "title": "Arsenal vs Real Madrid",
+            "home_team_id": 3,
+            "away_team_id": 4,
+            "league_id": 4,
+            "date": "2026-01-13",
+            "time": "21:00",
+            "is_live": false,
+            "is_featured": false
+        },
+        {
+            "id": 3,
+            "title": "Barcelona vs Bayern Munich",
+            "home_team_id": 5,
+            "away_team_id": 6,
+            "league_id": 4,
+            "date": "2026-01-14",
+            "time": "20:45",
+            "is_live": false,
+            "is_featured": true
+        },
+        {
+            "id": 4,
+            "title": "PSG vs Manchester City",
+            "home_team_id": 7,
+            "away_team_id": 1,
+            "league_id": 4,
+            "date": "2026-01-16",
+            "time": "20:00",
+            "is_live": false,
+            "is_featured": false
+        }
+    ]
+}

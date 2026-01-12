@@ -4456,6 +4456,237 @@ p {
 }
 
 /* ============================================
+   ARCHIVE MATCH CARDS
+   ============================================ */
+.oc-matches-archive {
+    padding: var(--oc-space-6) 0;
+}
+
+.oc-archive-header {
+    text-align: center;
+    margin-bottom: var(--oc-space-6);
+}
+
+.oc-archive-title {
+    font-size: var(--oc-font-size-3xl);
+    font-weight: 700;
+    color: var(--oc-gray-900);
+    margin-bottom: var(--oc-space-2);
+}
+
+.oc-archive-description {
+    font-size: var(--oc-font-size-lg);
+    color: var(--oc-gray-600);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.oc-archive-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--oc-space-4);
+    margin-bottom: var(--oc-space-6);
+    padding: var(--oc-space-4);
+    background-color: var(--oc-gray-50);
+    border-radius: var(--oc-radius-lg);
+}
+
+.oc-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--oc-space-2);
+}
+
+.oc-filter-group label {
+    font-size: var(--oc-font-size-sm);
+    font-weight: 600;
+    color: var(--oc-gray-700);
+}
+
+.oc-select {
+    padding: var(--oc-space-2) var(--oc-space-3);
+    border: 1px solid var(--oc-gray-300);
+    border-radius: var(--oc-radius-md);
+    background-color: var(--oc-white);
+    font-size: var(--oc-font-size-sm);
+    min-width: 150px;
+    transition: border-color var(--oc-transition-fast);
+}
+
+.oc-select:focus {
+    outline: none;
+    border-color: var(--oc-primary);
+    box-shadow: 0 0 0 3px rgba(26, 95, 122, 0.1);
+}
+
+.oc-matches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--oc-space-4);
+}
+
+.oc-match-card {
+    background-color: var(--oc-white);
+    border-radius: var(--oc-radius-lg);
+    box-shadow: var(--oc-shadow-sm);
+    border: 1px solid var(--oc-gray-200);
+    overflow: hidden;
+    transition: all var(--oc-transition-fast);
+}
+
+.oc-match-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--oc-shadow-md);
+    border-color: var(--oc-primary-light);
+}
+
+.oc-match-card.live {
+    border-left: 4px solid var(--oc-success);
+}
+
+.oc-match-card.featured {
+    border-left: 4px solid var(--oc-secondary);
+}
+
+.oc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--oc-space-1);
+    padding: var(--oc-space-1) var(--oc-space-2);
+    font-size: var(--oc-font-size-xs);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: var(--oc-radius-sm);
+}
+
+.oc-badge.oc-featured {
+    background-color: var(--oc-secondary);
+    color: var(--oc-white);
+}
+
+.oc-badge.oc-live {
+    background-color: var(--oc-success);
+    color: var(--oc-white);
+    animation: ocPulse 2s infinite;
+}
+
+.oc-match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--oc-space-4);
+    font-size: var(--oc-font-size-lg);
+    font-weight: 600;
+    color: var(--oc-gray-900);
+}
+
+.oc-vs {
+    color: var(--oc-gray-400);
+    font-weight: 400;
+}
+
+.oc-match-datetime {
+    padding: 0 var(--oc-space-4);
+    font-size: var(--oc-font-size-sm);
+    color: var(--oc-gray-600);
+    margin-bottom: var(--oc-space-2);
+}
+
+.oc-odds-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--oc-space-4);
+    background-color: var(--oc-gray-50);
+    border-top: 1px solid var(--oc-gray-200);
+}
+
+.oc-odds-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--oc-space-2) var(--oc-space-3);
+    background-color: var(--oc-gray-100);
+    border: 2px solid var(--oc-gray-200);
+    border-radius: var(--oc-radius-md);
+    cursor: pointer;
+    transition: all var(--oc-transition-fast);
+    min-width: 60px;
+    text-decoration: none;
+}
+
+.oc-odds-btn:hover {
+    background-color: var(--oc-primary);
+    border-color: var(--oc-primary);
+    color: var(--oc-white);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.oc-odds-btn span:first-child {
+    font-size: var(--oc-font-size-xs);
+    font-weight: 600;
+    color: var(--oc-gray-500);
+    margin-bottom: 2px;
+    text-transform: uppercase;
+}
+
+.oc-odds-btn:hover span:first-child {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.oc-odds-btn strong {
+    font-size: var(--oc-font-size-lg);
+    font-weight: 700;
+    color: var(--oc-gray-900);
+}
+
+.oc-odds-btn:hover strong {
+    color: var(--oc-white);
+}
+
+.oc-match-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--oc-space-3) var(--oc-space-4);
+    background-color: var(--oc-white);
+    border-top: 1px solid var(--oc-gray-100);
+    font-size: var(--oc-font-size-sm);
+    color: var(--oc-gray-600);
+}
+
+.oc-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--oc-space-1);
+    padding: var(--oc-space-2) var(--oc-space-3);
+    background-color: var(--oc-primary);
+    color: var(--oc-white);
+    font-weight: 600;
+    border-radius: var(--oc-radius-md);
+    transition: all var(--oc-transition-fast);
+    text-decoration: none;
+}
+
+.oc-view-btn:hover {
+    background-color: var(--oc-primary-dark);
+    color: var(--oc-white);
+    text-decoration: none;
+    transform: translateY(-1px);
+}
+
+.oc-no-matches {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--oc-space-8);
+    font-size: var(--oc-font-size-lg);
+    color: var(--oc-gray-500);
+}
+
+/* ============================================
    ODDS HIGHLIGHT ON CLICK
    ============================================ */
 .oc-odd-btn-compact.selected {
